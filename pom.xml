@@ -22,7 +22,6 @@
         <module>apchy-zuul</module>
         <module>apchy-web</module>
         <module>apchy-server-config</module>
-        <module>apchy-config</module>
         <module>apchy-model</module>
     </modules>
     <properties>

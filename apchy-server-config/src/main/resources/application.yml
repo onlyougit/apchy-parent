@@ -6,3 +6,11 @@ spring:
     name: apchy-server-config
   profiles:
     active: native
+eureka:
+  instance:
+    #是否显示主机得IP
+    perfer-ip-address: true
+  client:
+    service-url:
+      #注册中心得地址
+      defaultZone: http://localhost:8761/eureka/

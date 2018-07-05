@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      enabled: true
+      discovery:
+        enabled: true
+        service-id: apchy-server-config
+      profile: test
+      #uri: http://localhost:8888/ #配置中心的地址
