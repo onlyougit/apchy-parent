@@ -1,0 +1,233 @@
+banner地址：http://patorjk.com/software/taag/
+1、springboot+spring cloud
+|-父工程
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Finchley.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+|-Eureka Server
+  |--pom.xml
+  <dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-eureka-server</artifactId>
+  </dependency>
+  |--application.yml
+    eureka:
+      server:
+        #再本地开发时，可以关闭自我保护机制，以确保注册中心可以将不可用得实例正确删除
+        enable-self-preservation: false
+      instance:
+        hostname: localhost
+      client:
+        #由于本项目是一个注册中心，是不需要向自己注册和检索服务得，所以下面两个配置为false
+        register-with-eureka: false
+        fetch-registry: false
+        service-url:
+          #注册中心得地址
+          defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  |--UserApplication
+    @EnableEurekaServer
+    @Bean
+  	@LoadBalanced //用来开启Ribbon负载均衡的
+  	public RestTemplate restTemplate(){
+  		return new RestTemplate();
+  	}
+  |--启动项目：http://localhost:8761/
+|-消费者Eureka Client
+  |--pom.xml
+  <dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-eureka</artifactId>
+  </dependency>
+  |--application.yml
+    eureka:
+      instance:
+        #是否显示主机得IP
+        perfer-ip-address: true
+      client:
+        service-url:
+          #注册中心得地址
+          defaultZone: http://localhost:8761/eureka/
+  |--@EnableEurekaClient
+|-生产者Eureka Client【同消费者】
+|-服务之间调用
+restTemplate.getForObject("http://apchy-orer/order/"+oid,String.class);【为了使用Ribbon负载，这里使用服务名称，不适用IP:port】
+|-Ribbon负载均衡
+  |--@LoadBalanced
+  |--使用服务实例的名称，不使用IP:port
+  |--测试负载只需要启动两个服务名称一样的项目，然后连续请求就可以了
+2、springboot2.0.3没有EmbeddedServletContainerInitializedEvent
+3、Hystrix
+|-基本使用
+  |--和上面的消费者差不多一样，区别如下
+  |--pom.xml多了
+  <dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-hystrix</artifactId>
+  </dependency>
+  |--application.yml【端口改成8030】
+  |--启动类增加一个注解@EnableCircuitBreaker
+  |--Controller接口方法多了@HystrixCommand
+    @GetMapping("/users/{id}")
+    @HystrixCommand(fallbackMethod = "fallbackInfo")
+    public String findOrdersByUser(@PathVariable Integer id){
+        int oid = 1;
+        return restTemplate.getForObject("http://apchy-order/order/"+oid,String.class);
+    }
+    //参数类型和返回值必须和原方法一样
+    public String fallbackInfo(@PathVariable Integer id){
+        return "服务不可用，请稍后再试！";
+    }
+|-Hystrix Dashboard
+  |--是Hystrix的一个组件，它提供了数据监控和友好的图形界面
+  |--pom.xml
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+  </dependency>
+  |--@EnableHystrixDashboard
+  |--先访问http://localhost:8030/hystrix，然后输入http://localhost:8030/hystrix.stream、轮询时间间隔和标题
+  |--注意：springboot2.0需要配置Servlet，否则访问不到
+    @Bean
+  	public ServletRegistrationBean getServlet() {
+  		HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
+  		ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
+  		registrationBean.setLoadOnStartup(1);
+  		registrationBean.addUrlMappings("/hystrix.stream");
+  		registrationBean.setName("HystrixMetricsStreamServlet");
+  		return registrationBean;
+  	}
+  |--仪表盘：实心圆、曲线、成功数量、失败率
+4、Zuul
+|-Zuul属于边缘框架，可以用来执行人真、动态路由、服务迁移、负载均衡、安全和动态响应处理等操作
+|-pom.xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+|-application.yml追加
+zuul:
+  routes:
+    order-serviceId: #zuul唯一标识，如果该值与service-id相同，则可以省略
+      path: /order-mapping/** #需要映射的路劲
+      service-id: apchy-order #Eureka中的服务名称
+|-@EnableZuulProxy
+|-测试：
+  |--通过service-id进行访问：http://localhost:8050/apchy-order/order/1
+  |--通过path进行访问：http://localhost:8050/order-mapping/order/1
+|-如果不想暴露服务，可以使用ignored-services属性进行设置
+zuul:
+  ignored-services: #该配置下的服务将不会被路由
+5、config
+|-本地存储方式
+  |--服务端配置
+    |---pom.xml
+      <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-config-server</artifactId>
+      </dependency>
+    |---application.yml
+      server:
+        port: 8888
+        contextPath: /
+      spring:
+        application:
+          name: apchy-server-config
+        profiles:
+          active: native
+    |---创建3个配置文件application-dev.yml、application-prod.yml、application-test.yml
+    |---@EnableConfigServer
+  |--客户端配置
+    |---pom.xml
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-config</artifactId>
+    </dependency>
+    |---创建bootstrap.yml
+    server:
+      port: 8801
+      contextPath: /
+    spring:
+      application:
+        name: apchy-config
+      cloud:
+        config:
+          profile: prod
+          uri: http://localhost:8888/ #配置中心的地址
+  |--测试
+    |---查看服务端是否成功：http://localhost:8888/apchy-server-config/prod
+    |---查看客户端是否成功：http://localhost:8801/getPath
+|-Git存储方式
+  |--Git上创建一个项目，添加3个配置文件application-dev.yml、application-prod.yml、application-test.yml
+  |--修改服务端配置
+  server:
+    port: 8888
+    contextPath: /
+  spring:
+    application:
+      name: apchy-server-config
+    cloud:
+      config:
+        server:
+          git:
+            uri: https://github.com/onlyougit/apchy-config.git
+  |--修改客户端配置
+  server:
+    port: 8801
+    contextPath: /
+  spring:
+    application:
+      name: apchy-config
+    cloud:
+      config:
+        profile: prod
+        label: master
+        uri: http://localhost:8888/ #配置中心的地址
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

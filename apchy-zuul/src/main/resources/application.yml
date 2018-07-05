@@ -1,0 +1,24 @@
+server:
+  port: 8050
+  contextPath: /zuul
+spring:
+  application:
+    name: apchy-zuul
+eureka:
+  instance:
+    #是否显示主机得IP
+    perfer-ip-address: true
+    #将status中得内容显示为“IP:端口“
+    #instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+  client:
+    service-url:
+      #注册中心的地址
+      defaultZone: http://localhost:8761/eureka/
+zuul:
+  routes:
+    order-service: #zuul唯一标识，如果该值与service-id相同，则可以省略
+      path: /order-service/** #需要映射的路劲
+      service-id: apchy-order #Eureka中的服务名称
+    user-service: #zuul唯一标识，如果该值与service-id相同，则可以省略
+      path: /user-service/** #需要映射的路劲
+      service-id: apchy-user #Eureka中的服务名称

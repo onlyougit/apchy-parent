@@ -1,0 +1,16 @@
+server:
+  port: 8761
+  contextPath: /
+eureka:
+  server:
+    #再本地开发时，可以关闭自我保护机制，以确保注册中心可以将不可用得实例正确删除
+    enable-self-preservation: false
+  instance:
+    hostname: localhost
+  client:
+    #由于本项目是一个注册中心，是不需要向自己注册和检索服务得，所以下面两个配置为false
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      #注册中心得地址
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
