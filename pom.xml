@@ -19,7 +19,6 @@
         <module>apchy-server</module>
         <module>apchy-user</module>
         <module>apchy-order</module>
-        <module>apchy-order-ribbon</module>
         <module>apchy-zuul</module>
         <module>apchy-web</module>
         <module>apchy-server-config</module>
