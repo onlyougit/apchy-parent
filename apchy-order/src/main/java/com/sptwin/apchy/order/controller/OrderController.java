@@ -2,6 +2,7 @@ package com.sptwin.apchy.order.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.sptwin.spchy.model.entity.Order;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,20 @@ import java.util.List;
 
 @RestController
 public class OrderController {
+    @Value("${product.image.path}")
+    private String pip;
+    @Value("${global.test}")
+    private String globalTest;
+
+    @GetMapping("/orders/getGlocal")
+    public String getGlocal(){
+        return "global配置文件属性值："+globalTest;
+    }
+
+    @GetMapping("/orders/getPip")
+    public String getPip(){
+        return "order配置文件属性值："+pip;
+    }
 
     @GetMapping("/order/{id}")
     public String findOrderById(@PathVariable Integer id){
@@ -21,6 +36,7 @@ public class OrderController {
         order.setRemark("Eureka Order !");
         return order.toString();
     }
+
     @GetMapping("/order/findOrder/{userId}")
     @HystrixCommand(fallbackMethod = "findOrderFallback")
     public List<Order> findOrder(@PathVariable Integer userId){

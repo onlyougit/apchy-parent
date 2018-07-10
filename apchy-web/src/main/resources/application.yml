@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
   contextPath: /
 spring:
   application:
@@ -17,24 +17,10 @@ spring:
     time-zone: GMT+8
   profiles:
     active: dev
-
----
-spring:
-  profiles: dev
-product:
-  image:
-    path: product/image/dev/
-
----
-spring:
-  profiles: prod
-product:
-  image:
-    path: product/image/prod/
-
----
-spring:
-  profiles: test
-product:
-  image:
-    path: product/image/test/
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+    content-type: text/html
+    cache: false

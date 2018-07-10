@@ -4,8 +4,11 @@ server:
 spring:
   application:
     name: apchy-server-config
-  profiles:
-    active: native
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/onlyougit/apchy-config.git
 eureka:
   instance:
     #是否显示主机得IP
