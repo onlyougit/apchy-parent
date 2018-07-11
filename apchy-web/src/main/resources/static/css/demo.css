@@ -1,6 +1,6 @@
 ﻿body
 {
-    padding-left:0px;
+    padding-left:10px;
     font-size:13px;
 }
 h1
@@ -29,5 +29,3 @@ h4
     /*background:url(titleback.png) no-repeat scroll left bottom transparent*/
     border-bottom:solid 1px #888;
 }
-
-

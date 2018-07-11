@@ -64,4 +64,3 @@ function __CreateJSPath(js) {
     }
     return path;
 }
-
