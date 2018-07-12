@@ -29,9 +29,9 @@
                 </td>
             </tr>
             <tr>
-                <td style="width:60px;"><label for="userPw">密码：</label></td>
+                <td style="width:60px;"><label for="password">密码：</label></td>
                 <td>
-                    <input id="userPw" name="userPw" vtype="minLength:5" class="mini-password"
+                    <input id="password" name="password" vtype="minLength:5" class="mini-password"
                            requiredErrorText="密码不能少于5个字符" required="true" style="width:150px;"/>
                     <!-- &nbsp;&nbsp;<a href="#">忘记密码?</a> -->
                 </td>
@@ -77,29 +77,29 @@
         var json = mini.encode(data); //转换成JSON数据
         //alert(json);
         $.ajax({
-            url: "<c:url value='/login/loginCheck.action'/>",
+            url: "/authentication",
             data: {json: json},
             type: "post",
-            success: function () {
-                loginWindow.hide();
-                mini.loading("登录成功，马上转到系统...", "登录成功");
-                setTimeout(function () {
-                    window.location = "<c:url value='/login/welcome.action'/>";
-                }, 1500);
-            },
-
-            error: function (jqXHR, textStatus, errorThrown) {
-            	$("#img_code").trigger("onclick");
-                mini.showMessageBox({
-                    showModal: false,
-                    width: 250,
-                    title: "提示",
-                    iconCls: "mini-messagebox-warning",
-                    message: jqXHR.responseText,
-                    timeout: 3000,
-                    x: "right",
-                    y: "bottom"
-                });
+            success: function (data) {
+                if(data.code==1){
+                    loginWindow.hide();
+                    mini.loading("登录成功，马上转到系统...", "登录成功");
+                    setTimeout(function () {
+                        window.location = "<c:url value='/main'/>";
+                    }, 1500);
+                }else{
+                    $("#img_code").trigger("onclick");
+                    mini.showMessageBox({
+                        showModal: false,
+                        width: 250,
+                        title: "提示",
+                        iconCls: "mini-messagebox-warning",
+                        message: data.msg,
+                        timeout: 3000,
+                        x: "right",
+                        y: "bottom"
+                    });
+                }
             }
         });
     }
