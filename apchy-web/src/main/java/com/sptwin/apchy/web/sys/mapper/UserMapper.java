@@ -1,13 +1,17 @@
 package com.sptwin.apchy.web.sys.mapper;
 
 import com.sptwin.apchy.web.entity.User;
-import org.apache.ibatis.annotations.Select;
 
 public interface UserMapper {
+    int deleteByPrimaryKey(Long id);
 
-    @Select("select * from t_sys_user where id = #{id}")
-    User findById(Long id);
+    int insert(User record);
 
-    @Select("select * from t_sys_user where user_name = #{userName}")
-    User findByUserName(String userName);
+    int insertSelective(User record);
+
+    User selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(User record);
+
+    int updateByPrimaryKey(User record);
 }

@@ -8,9 +8,10 @@ import com.sptwin.apchy.web.sys.pojo.UserCustom;
 import com.sptwin.spchy.model.common.ApplicationError;
 import com.sptwin.spchy.model.common.ResponseJson;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,9 +40,14 @@ public class LoginController {
         return "main";
     }
 
+    @RequestMapping("/403")
+    public String forbidden(){
+        return "403";
+    }
+
     @PostMapping(value = "/authentication")
     @ResponseBody
-    public ResponseJson<Object> authentication(String json, HttpServletRequest request, Model model, HttpSession session) {
+    public ResponseJson<Object> authentication(String json, HttpServletRequest request) {
         ResponseJson<Object> responseJson = new ResponseJson<>();
         UserCustom userCustom = JSON.parseObject(json, UserCustom.class);
         if (null != userCustom) {
@@ -60,10 +66,13 @@ public class LoginController {
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(usernamePasswordToken);   //完成登录
-            User user = (User) subject.getPrincipal();
-            //更新用户登录时间，也可以在ShiroRealm里面做
-            session.setAttribute("user", user);
-        } catch (Exception e) {
+        } catch (LockedAccountException lae) {
+            usernamePasswordToken.clear();
+            responseJson.setCode(ApplicationError.USERNAME_LOCKED.getCode());
+            responseJson.setMsg(ApplicationError.USERNAME_LOCKED.getMessage());
+            return responseJson;
+        } catch (AuthenticationException e) {
+            usernamePasswordToken.clear();
             responseJson.setCode(ApplicationError.USERNAME_PW_ERROR.getCode());
             responseJson.setMsg(ApplicationError.USERNAME_PW_ERROR.getMessage());
             return responseJson;
@@ -71,11 +80,10 @@ public class LoginController {
         return responseJson;
     }
     @RequestMapping("/logout")
-    public String logout(HttpSession session,Model model) {
+    public String logout() {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
-        model.addAttribute("msg","安全退出！");
-        return "login";
+        return "redirect:/login";
     }
     protected boolean checkAuthCode(UserCustom userCustom, HttpServletRequest request){
         String code = userCustom.getAuthCode();

@@ -85,7 +85,7 @@
                     loginWindow.hide();
                     mini.loading("登录成功，马上转到系统...", "登录成功");
                     setTimeout(function () {
-                        window.location = "<c:url value='/main'/>";
+                        window.location = "/main";
                     }, 1500);
                 }else{
                     $("#img_code").trigger("onclick");
@@ -107,8 +107,6 @@
         var form = new mini.Form("#loginWindow");
         form.clear();
     }
-    /////////////////////////////////////
-
 </script>
 
 </body>

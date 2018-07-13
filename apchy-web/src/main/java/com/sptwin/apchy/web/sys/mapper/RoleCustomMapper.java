@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-public interface OrderMapper {
+public interface RoleCustomMapper {
 
     List<Role> findRolesByUserId(Long id);
 }

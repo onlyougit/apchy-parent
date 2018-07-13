@@ -10,31 +10,17 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * 在认证、授权内部实现机制中都有提到，最终处理都将交给Real进行处理。因为在Shiro中，最终是通过Realm来获取应用程序中的用户、角色及权限信息的。通常情况下，在Realm中会直接从我们的数据源中获取Shiro需要的验证信息。可以说，Realm是专用于安全框架的DAO.
- * Shiro的认证过程最终会交由Realm执行，这时会调用Realm的getAuthenticationInfo(token)方法。
- * 该方法主要执行以下操作:
- *
- * 检查提交的进行认证的令牌信息
- * 根据令牌信息从数据源(通常为数据库)中获取用户信息
- * 对用户信息进行匹配验证。
- * 验证通过将返回一个封装了用户信息的AuthenticationInfo实例。
- * 验证失败则抛出AuthenticationException异常信息。而在我们的应用程序中要做的就是自定义一个Realm类，继承AuthorizingRealm抽象类，重载doGetAuthenticationInfo()，重写获取用户信息的方法。
- */
-@Component
 public class ShiroRealm extends AuthorizingRealm {
     public static final Logger log = LoggerFactory.getLogger(AuthorizingRealm.class);
     @Autowired
@@ -42,29 +28,26 @@ public class ShiroRealm extends AuthorizingRealm {
     @Autowired
     private RoleService roleService;
     /**
-     * 验证用户身份
+     * 用户身份验证
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String userName = (String) token.getPrincipal();
         String password = new String((char[]) token.getCredentials());
 
-        log.info("密码="+password);
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         User user = this.userService.findByUserName(userName);
 
-        //这里校验了，CredentialsMatcher就不需要了，如果这里不校验，调用CredentialsMatcher校验
         if (user == null) {
             throw new UnknownAccountException("用户名或密码错误！");
-        }
-        if (!password.equals(user.getPassword())) {
-            throw new IncorrectCredentialsException("用户名或密码错误！");
         }
         if (user.getLocked()==UserLockStatus.LOCKED.ordinal()) {
             throw new LockedAccountException("账号已被锁定,请联系管理员！");
         }
         //也可以在此处更新最后登录时间（或在登录方法实现）
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, password,ByteSource.Util.bytes(user.getSalt()), getName());//salt=username+salt
+        AuthenticationInfo info = new SimpleAuthenticationInfo(user.getUserName(), user.getPassword(),ByteSource.Util.bytes(user.getSalt()), getName());//salt=username+salt
+        Session session = SecurityUtils.getSubject().getSession();
+        session.setAttribute("user", user);
         return info;
     }
     /**

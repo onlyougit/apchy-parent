@@ -7,6 +7,7 @@ public enum ApplicationError {
 	PARAMETER_ERROR("参数错误", "2"),
 	USERNAME_PW_ERROR("用户名或密码错误", "1001"),
 	AUTHCODE_ERROR("验证码错误", "1002"),
+	USERNAME_LOCKED("用户已经被锁定不能登录，请与管理员联系！", "1003"),
 
 	;
 	private String message;
