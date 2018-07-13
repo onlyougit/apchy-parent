@@ -13,6 +13,27 @@ public class UserCustom extends User {
 
     private String roles;
 
+    //新密码
+    private String userNewPw;
+    //密码确认
+    private String userNewPwConfirm;
+
+    public String getUserNewPw() {
+        return userNewPw;
+    }
+
+    public void setUserNewPw(String userNewPw) {
+        this.userNewPw = userNewPw;
+    }
+
+    public String getUserNewPwConfirm() {
+        return userNewPwConfirm;
+    }
+
+    public void setUserNewPwConfirm(String userNewPwConfirm) {
+        this.userNewPwConfirm = userNewPwConfirm;
+    }
+
     public List<Role> getRoleList() {
         return roleList;
     }

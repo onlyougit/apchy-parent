@@ -21,16 +21,9 @@
         <div class="navbar-brand">APCHY</div>
         <div class="navbar-brand navbar-brand-compact">A</div>
     </div>
-    <ul class="nav navbar-nav">
-        <li><a id="toggle"><span class="fa fa-bars" ></span></a></li>
-        <li class="icontop"><a href="#"><i class="fa fa-hand-pointer-o"></i><span >系统演示</span></a></li>
-        <li class="icontop"><a href="#"><i class="fa fa-puzzle-piece"></i><span >开发文档</span></a></li>
-        <li class="icontop"><a href="#"><i class="fa fa-sort-amount-asc"></i><span >人力资源</span></a></li>
-        <li class="icontop"><a href="#"><i class="fa  fa-cog"></i><span >系统设置</span></a></li>
-    </ul>
     <ul class="nav navbar-nav navbar-right">
         <li ><a href="#"><i class="fa fa-paper-plane"></i> 代办事项</a></li>
-        <li><a href="#"><i class="fa fa-pencil-square-o"></i> 修改密码</a></li>
+        <li><a th:onclick="'javascript:changePassword()'"><i class="fa fa-pencil-square-o"></i> 修改密码</a></li>
         <li class="dropdown">
             <a class="dropdown-toggle userinfo">
                 <img class="user-img" th:src="@{/images/user.jpg}" />个人资料<i class="fa fa-angle-down"></i>
@@ -67,11 +60,84 @@
 
 </div>
 
+<div id="chpwWindow" class="mini-window" title="修改密码"
+     style="width: 270px;" showModal="true" allowResize="true"
+     allowDrag="true">
+    <div id="chpwform" class="form">
+        <input class="mini-hidden" name="userId" value="<%=userId%>" />
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 80px;">原密码：</td>
+                <td style="width: 150px;"><input id="password" name="password"
+                                                 vtype="minLength:5" class="mini-password" required="true"
+                                                 style="width: 150px;" /></td>
+            </tr>
+            <tr>
+                <td>新密码：</td>
+                <td><input id="userNewPw" name="userNewPw" vtype="minLength:5"
+                           class="mini-password" required="true" style="width: 150px;" /></td>
+            </tr>
+            <tr>
+                <td>确认密码：</td>
+                <td><input id="userNewPwConfirm" name="userNewPwConfirm"
+                           vtype="minLength:5" class="mini-password" required="true"
+                           style="width: 150px;" /></td>
+            </tr>
+            <tr>
+                <td
+                        style="text-align: right; padding-top: 5px; padding-right: 20px;"
+                        colspan="2"><a class="Update_Button"
+                                       href="javascript:updatePw()">确定</a> <a class="Cancel_Button"
+                                                                              href="javascript:cancelRow()">取消</a></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
 
 </body>
 </html>
 <script>
+var chpwWindow = mini.get("chpwWindow");
+function changePassword() {
+    chpwWindow.show();
+}
+function cancelRow() {
+    chpwWindow.hide();
+}
+function updatePw() {
+    //判断两次密码是否一致
+    var userNewPw = mini.get("#userNewPw").value;
+    var userNewPwConfirm = mini.get("#userNewPwConfirm").value;
+    if (userNewPw != userNewPwConfirm) {
+        alert("密码不一致");
+        return;
+    }
+    var form = new mini.Form("#chpwform");
+    form.validate();
+    if (form.isValid() == false)
+        return;
+    var o = form.getData();
 
+    var json = mini.encode(o);//这里有一个坑：[o]得到的是一个数组对象，o得到的是一个对象
+    $.ajax({
+        url : "<c:url value='/user/changePassword'/>",
+        data : {
+            json : json
+        },
+        success : function() {
+            chpwWindow.hide();
+            mini.showTips({
+                content : "<b>成功</b> <br/>密码修改成功",
+                state : "success",
+                x : "center",
+                y : "center",
+                timeout : 3000
+            });
+        }
+    });
+    chpwWindow.hide();
+}
     function activeTab(item) {
         var tabs = mini.get("mainTabs");
         var tab = tabs.getTab(item.id);

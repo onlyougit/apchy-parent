@@ -7,8 +7,6 @@ import org.apache.shiro.util.ByteSource;
 
 public class EncryptUtil {
 
-    public static final String algorithmName = "md5";
-    public static final Integer hashIterations = 2;
     /**
      * 加密
      * @param password
@@ -31,7 +29,7 @@ public class EncryptUtil {
     }
 
     public static String entryptPassword2(String password, String salt){
-        SimpleHash hash = new SimpleHash(algorithmName, password, ByteSource.Util.bytes(salt), hashIterations);
+        SimpleHash hash = new SimpleHash(Constant.ALGORITHMNAME, password, ByteSource.Util.bytes(salt), Constant.HASHITERATIONS);
         String encodedPassword = hash.toHex();
         return encodedPassword;
     }

@@ -4,6 +4,7 @@ import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.sys.service.RoleService;
 import com.sptwin.apchy.web.sys.service.UserService;
+import com.sptwin.spchy.model.common.Constant;
 import com.sptwin.spchy.model.enums.UserLockStatus;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -47,7 +48,7 @@ public class ShiroRealm extends AuthorizingRealm {
         //也可以在此处更新最后登录时间（或在登录方法实现）
         AuthenticationInfo info = new SimpleAuthenticationInfo(user.getUserName(), user.getPassword(),ByteSource.Util.bytes(user.getSalt()), getName());//salt=username+salt
         Session session = SecurityUtils.getSubject().getSession();
-        session.setAttribute("user", user);
+        session.setAttribute(Constant.SESSION_BEAN, user);
         return info;
     }
     /**
