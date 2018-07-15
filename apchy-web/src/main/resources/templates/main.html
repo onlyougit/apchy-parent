@@ -22,7 +22,7 @@
         <div class="navbar-brand navbar-brand-compact">A</div>
     </div>
     <ul class="nav navbar-nav navbar-right">
-        <li ><a href="#"><i class="fa fa-paper-plane"></i> 代办事项</a></li>
+        <li ><a href="#"><i class="fa fa-paper-plane"></i> 代办事项<div th:text="${session.user.userName}"></div></a></li>
         <li><a th:onclick="'javascript:changePassword()'"><i class="fa fa-pencil-square-o"></i> 修改密码</a></li>
         <li class="dropdown">
             <a class="dropdown-toggle userinfo">
@@ -84,11 +84,10 @@
                            style="width: 150px;" /></td>
             </tr>
             <tr>
-                <td
-                        style="text-align: right; padding-top: 5px; padding-right: 20px;"
-                        colspan="2"><a class="Update_Button"
-                                       href="javascript:updatePw()">确定</a> <a class="Cancel_Button"
-                                                                              href="javascript:cancelRow()">取消</a></td>
+                <td style="text-align: center; padding: 10px;" colspan="2">
+                    <a class="mini-button" href="javascript:updatePw()">确定</a>
+                    <a class="mini-button" href="javascript:cancelRow()">取消</a>
+                </td>
             </tr>
 
         </table>
@@ -98,9 +97,11 @@
 </body>
 </html>
 <script>
+mini.parse();
 var chpwWindow = mini.get("chpwWindow");
 function changePassword() {
     chpwWindow.show();
+    mini.get("password").focus();
 }
 function cancelRow() {
     chpwWindow.hide();
@@ -121,22 +122,35 @@ function updatePw() {
 
     var json = mini.encode(o);//这里有一个坑：[o]得到的是一个数组对象，o得到的是一个对象
     $.ajax({
-        url : "<c:url value='/user/changePassword'/>",
+        url : "/changePassword",
+        type: "post",
         data : {
             json : json
         },
-        success : function() {
+        success : function(data) {
             chpwWindow.hide();
-            mini.showTips({
-                content : "<b>成功</b> <br/>密码修改成功",
-                state : "success",
-                x : "center",
-                y : "center",
-                timeout : 3000
-            });
+            if(data.code==1){
+                mini.showTips({
+                    content : "<b>成功</b> <br/>密码修改成功",
+                    state : "success",
+                    x : "center",
+                    y : "center",
+                    timeout : 3000
+                });
+            }else{
+                mini.showMessageBox({
+                    showModal: false,
+                    width: 250,
+                    title: "提示",
+                    iconCls: "mini-messagebox-warning",
+                    message: data.msg,
+                    timeout: 3000,
+                    x: "right",
+                    y: "bottom"
+                });
+            }
         }
     });
-    chpwWindow.hide();
 }
     function activeTab(item) {
         var tabs = mini.get("mainTabs");

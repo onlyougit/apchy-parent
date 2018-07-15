@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
             return responseJson;
         }
         userCustom.setPassword(newPw);
-        //userMapper.updateByPrimaryKeySelective(userCustom);
+        userMapper.updateByPrimaryKeySelective(userCustom);
         return responseJson;
     }
 

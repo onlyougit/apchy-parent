@@ -3,7 +3,6 @@ package com.sptwin.apchy.web.controller;
 import com.alibaba.fastjson.JSON;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
-import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.service.SessionService;
 import com.sptwin.apchy.web.sys.pojo.UserCustom;
 import com.sptwin.apchy.web.sys.service.UserService;
@@ -92,9 +91,9 @@ public class LoginController {
     }
     @RequestMapping("/changePassword")
     @ResponseBody
-    public ResponseJson<Object> changePassword(String json,HttpSession session){
+    public ResponseJson<Object> changePassword(String json){
         ResponseJson<Object> responseJson = new ResponseJson<>();
-        Long userId = sessionService.getUserId(session);
+        Long userId = sessionService.getUserId();
         UserCustom userCustom = JSON.parseObject(json, UserCustom.class);
         if(null == userCustom){
             responseJson.setCode(ApplicationError.PW_UPDATE_FAIL.getCode());

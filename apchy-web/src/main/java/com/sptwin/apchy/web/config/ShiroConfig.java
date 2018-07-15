@@ -5,10 +5,15 @@ import java.util.Map;
 
 import com.sptwin.spchy.model.common.Constant;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +51,6 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/user/regist", "anon");
         filterChainDefinitionMap.put("/**", "authc");//其他资源都需要认证
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        System.out.println("Shiro拦截器工厂类注入成功");
         return shiroFilterFactoryBean;
     }
 
@@ -59,12 +63,11 @@ public class ShiroConfig {
         // 设置realm.
         securityManager.setRealm(shiroRealm());
         // 自定义缓存实现 使用redis
-        //securityManager.setCacheManager(cacheManager());
+        securityManager.setCacheManager(cacheManager());
         // 自定义session管理 使用redis
-        //securityManager.setSessionManager(sessionManager());
+        securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
-
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
@@ -104,11 +107,31 @@ public class ShiroConfig {
      * 使用的是shiro-redis开源插件
      * @return
      */
-   /* public RedisCacheManager cacheManager() {
+    public RedisCacheManager cacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
         return redisCacheManager;
-    }*/
+    }
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost("47.96.18.156");
+        redisManager.setPort(6379);
+        redisManager.setExpire(1800);
+        redisManager.setTimeout(10000);
+        return redisManager;
+    }
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionDAO(redisSessionDAO());
+        return sessionManager;
+    }
+    @Bean
+    public RedisSessionDAO redisSessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        return redisSessionDAO;
+    }
     @Bean
     public ShiroRealm shiroRealm(){
         ShiroRealm shiroRealm = new ShiroRealm();
@@ -116,30 +139,11 @@ public class ShiroConfig {
         return shiroRealm;
     }
     /**
-     * RedisSessionDAO shiro sessionDao层的实现 通过redis
-     * 使用的是shiro-redis开源插件
-     */
-    /*@Bean
-    public RedisSessionDAO redisSessionDAO() {
-        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-        redisSessionDAO.setRedisManager(redisManager());
-        return redisSessionDAO;
-    }*/
-    /**
      * ShiroDialect，为了在thymeleaf里使用shiro的标签的bean
      * @return
      */
     /*@Bean
     public ShiroDialect shiroDialect() {
         return new ShiroDialect();
-    }*/
-    /**
-     * shiro session的管理
-     */
-    /*@Bean
-    public DefaultWebSessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setSessionDAO(redisSessionDAO());
-        return sessionManager;
     }*/
 }

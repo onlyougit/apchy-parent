@@ -5,5 +5,5 @@ import javax.servlet.http.HttpSession;
 
 public interface SessionService {
 
-	public Long getUserId(HttpSession session);
+	public Long getUserId();
 }
