@@ -3,8 +3,9 @@ package com.sptwin.apchy.web.controller;
 import com.alibaba.fastjson.JSON;
 import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.multitype.GenericManageableCaptchaService;
+import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.service.SessionService;
-import com.sptwin.apchy.web.sys.pojo.UserCustom;
+import com.sptwin.apchy.web.model.UserCustom;
 import com.sptwin.apchy.web.sys.service.UserService;
 import com.sptwin.spchy.model.common.ApplicationError;
 import com.sptwin.spchy.model.common.ResponseJson;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
@@ -93,7 +93,7 @@ public class LoginController {
     @ResponseBody
     public ResponseJson<Object> changePassword(String json){
         ResponseJson<Object> responseJson = new ResponseJson<>();
-        Long userId = sessionService.getUserId();
+        User user = sessionService.getUser();
         UserCustom userCustom = JSON.parseObject(json, UserCustom.class);
         if(null == userCustom){
             responseJson.setCode(ApplicationError.PW_UPDATE_FAIL.getCode());
@@ -105,7 +105,7 @@ public class LoginController {
             responseJson.setMsg(ApplicationError.TWO_PASSWORD_ERROR.getMessage());
             return responseJson;
         }
-        userCustom.setId(userId);
+        userCustom.setId(user.getId());
         responseJson = userService.changePassword(userCustom);
         return responseJson;
     }

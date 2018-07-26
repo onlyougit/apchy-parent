@@ -1,20 +1,23 @@
 package com.sptwin.apchy.web.config;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.sptwin.spchy.model.common.Constant;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.SessionListener;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisManager;
-import org.crazycake.shiro.RedisSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -67,7 +70,7 @@ public class ShiroConfig {
         // 自定义缓存实现 使用redis
         //securityManager.setCacheManager(cacheManager());
         // 自定义session管理 使用redis
-        //securityManager.setSessionManager(sessionManager());
+        securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
     @Bean
@@ -95,6 +98,29 @@ public class ShiroConfig {
      * 使用的是shiro-redis开源插件
      * @return
      */
+
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setGlobalSessionTimeout(1000*60*30);
+        /*sessionManager.setSessionListeners(Collections.singleton(new SessionListener() {
+            @Override
+            public void onStart(Session session) {
+                System.out.println("session start..........");
+            }
+
+            @Override
+            public void onStop(Session session) {
+                System.out.println("session stop..........");
+            }
+
+            @Override
+            public void onExpiration(Session session) {
+                System.out.println("session expiration..........");
+            }
+        }));*/
+        return sessionManager;
+    }
     /*public RedisCacheManager cacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
@@ -140,11 +166,11 @@ public class ShiroConfig {
         return shiroRealm;
     }
     /**
-     * ShiroDialect，为了在thymeleaf里使用shiro的标签的bean
+     * 为了在thymeleaf里使用shiro的标签
      * @return
      */
-    /*@Bean
+    @Bean
     public ShiroDialect shiroDialect() {
         return new ShiroDialect();
-    }*/
+    }
 }

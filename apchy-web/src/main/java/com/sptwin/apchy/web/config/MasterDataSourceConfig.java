@@ -26,7 +26,7 @@ import java.util.List;
 @MapperScan(basePackages = MasterDataSourceConfig.PACKAGE, sqlSessionFactoryRef = "masterSqlSessionFactory")// 扫描 Mapper 接口并容器管理
 public class MasterDataSourceConfig {
 
-    static final String PACKAGE = "com.sptwin.apchy.web.*.mapper";
+    static final String PACKAGE = "com.sptwin.apchy.web.sys.mapper";
     static final String MAPPER_LOCATION = "classpath:mybatis/mapper/**/*.xml";
     static final String CONFIG_LOCATION = "mybatis/mybatis-config.xml";
     @Autowired

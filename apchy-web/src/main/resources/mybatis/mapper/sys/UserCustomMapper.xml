@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sptwin.apchy.web.sys.mapper.UserCustomMapper">
+  <resultMap id="QueryUserResultMap" type="com.sptwin.apchy.web.model.UserCustom">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="locked" jdbcType="INTEGER" property="userLockStatusEnum" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <collection property="roleList" column="id" ofType="com.sptwin.apchy.web.entity.Role" select="com.sptwin.apchy.web.sys.mapper.UserRoleCustomMapper.getRoleByUserId">
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_name, real_name, locked, gmt_create, gmt_modified
+  </sql>
+  <sql id="query_user_where">
+    <if test="userName!=null and userName!=''">
+      and user_name LIKE concat('%',#{userName},'%')
+    </if>
+    <if test="realName!=null and realName!=''">
+      and real_name LIKE concat('%',#{realName},'%')
+    </if>
+  </sql>
+  <select id="queryUser" parameterType="com.sptwin.apchy.web.model.UserCustom" resultMap="QueryUserResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_user
+    <where>
+      <include refid="query_user_where"></include>
+    </where>
+    ORDER BY id desc
+  </select>
+  <select id="queryUserById" parameterType="java.lang.Long" resultMap="QueryUserResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_sys_user
+    where id = #{value}
+  </select>
+  <insert id="insertSelective" parameterType="com.sptwin.apchy.web.entity.User">
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+    insert into t_sys_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="realName != null">
+        real_name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="salt != null">
+        salt,
+      </if>
+      <if test="locked != null">
+        locked,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null">
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="locked != null">
+        #{locked,jdbcType=INTEGER},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

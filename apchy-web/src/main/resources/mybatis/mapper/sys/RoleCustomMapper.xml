@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sptwin.apchy.web.sys.mapper.RoleCustomMapper">
-
-    <select id="findRolesByUserId" parameterType="java.lang.Long" resultType="com.sptwin.apchy.web.entity.Role">
+    <resultMap id="BaseResultMap" type="com.sptwin.apchy.web.model.RoleCustom">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="available" jdbcType="INTEGER" property="availableEnum" typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler" />
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, role_name, description, available, gmt_create, gmt_modified
+    </sql>
+    <sql id="query_role_where">
+        <if test="roleName!=null and roleName!=''">
+            and role_name LIKE concat('%',#{roleName},'%')
+        </if>
+    </sql>
+    <select id="queryRole" parameterType="com.sptwin.apchy.web.model.RoleCustom" resultMap="BaseResultMap">
         select
-        r.id,r.role_name roleName,r.description,r.available
-        from t_sys_user_role ur,t_sys_role r
-        where ur.role_id = r.id and ur.user_id = #{value}
+        <include refid="Base_Column_List" />
+        from t_sys_role
+        <where>
+            <include refid="query_role_where"></include>
+        </where>
+        order by id desc
     </select>
 </mapper>

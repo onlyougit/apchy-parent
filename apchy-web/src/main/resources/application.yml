@@ -55,3 +55,11 @@ spring:
       wall:
         config:
           multiStatementAllow: true
+
+user:
+  default-pw: 123abc
+
+
+
+
+

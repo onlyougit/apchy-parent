@@ -3,9 +3,9 @@ package com.sptwin.spchy.model.enums;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum UserLockStatus {
-    LOCKED(0, "锁定"),
-    UNLOCKED(1, "正常"),
+public enum ResourceType {
+    MENU(0, "菜单"),
+    BUTTON(1, "按钮"),
 
     ;
 
@@ -15,7 +15,7 @@ public enum UserLockStatus {
     /* 描述 */
     private String text;
 
-    UserLockStatus(Integer code, String text) {
+    ResourceType(Integer code, String text) {
         this.code = code;
         this.text = text;
     }

@@ -1,13 +1,22 @@
 package com.sptwin.apchy.web.sys.service;
 
 import com.sptwin.apchy.web.entity.User;
-import com.sptwin.apchy.web.sys.pojo.UserCustom;
+import com.sptwin.apchy.web.model.UserCustom;
+import com.sptwin.spchy.model.common.Pagination;
 import com.sptwin.spchy.model.common.ResponseJson;
 
-public interface UserService {
-    User findByUserName(String userName);
+import java.util.Map;
 
+public interface UserService {
     void insertUser(UserCustom userCustom);
 
     ResponseJson<Object>  changePassword(UserCustom userCustom);
+
+    Map queryUser(UserCustom userCustom, Pagination grid);
+
+    ResponseJson<Object> insertOrEditUser(UserCustom userCustom, ResponseJson<Object> responseJson);
+
+    UserCustom editQuery(Long id);
+
+    void deleteUser(Long id);
 }

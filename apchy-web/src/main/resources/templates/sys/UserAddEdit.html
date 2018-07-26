@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>用户编辑</title>
+    <script th:src="@{/miniui/scripts/boot.js}" type="text/javascript"></script>
+
+    <style type="text/css">
+        html,body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<form id="form1" method="post">
+    <input name="id" class="mini-hidden" />
+    <fieldset style="border:solid 1px #aaa;padding:3px;">
+        <legend >用户面板</legend>
+        <div style="padding:5px;">
+            <table>
+                <tr>
+                    <td style="width:100px;">登录账号：</td>
+                    <td style="width:170px;">
+                        <input id="userName" name="userName" class="mini-textbox" required="true" emptyText="请输入登录账号"/>
+                    </td>
+                    <td style="width:100px;"> 真是姓名：</td>
+                    <td style="width:170px;">
+                        <input name="realName" class="mini-textbox" required="true" emptyText="请输入真实姓名"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:100px;"> 角色：</td>
+                    <td style="width:170px;">
+                        <input id="btnEdit" name="roleNames" class="mini-buttonedit" emptyText="请选择机器" onbuttonclick="onButtonEdit"/>
+                    </td>
+                    <td style="width:100px;">密码：</td>
+                    <td style="width:170px;">
+                        <div style="color: red;">用户初始密码:123abc</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+    <div style="text-align:center;padding:10px;">
+        <a class="mini-button" onclick="onOk" style="width:60px;margin-right:20px;">确定</a>
+        <a class="mini-button" onclick="onCancel" style="width:60px;">取消</a>
+    </div>
+</form>
+<script type="text/javascript">
+    mini.parse();
+
+    var form = new mini.Form("form1");
+
+    function SaveData() {
+        saveForm(form, {
+            url: "/user/insertOrEditUser",
+            callback: function (success) {
+                if (success) CloseWindow("save");
+                //else CloseWindow();
+            }
+        });
+    }
+
+    ////////////////////
+    //标准方法接口定义
+    function SetData(data) {
+        if (data.action == "edit") {
+            //跨页面传递的数据对象，克隆后才可以安全使用
+            data = mini.clone(data);
+            $.ajax({
+                url: "/user/editQuery?id=" + data.id,
+                cache: false,
+                success: function (text) {
+                    var o = mini.decode(text);
+                    form.setData(o);
+                    form.setChanged(false);
+                    var btnEdit = mini.get("btnEdit");
+                    btnEdit.setValue(o.roleIds);
+                    btnEdit.setText(o.roleNames);
+                    mini.get("userName").set({enabled: false});
+                }
+            });
+        }
+    }
+
+    function GetData() {
+        var o = form.getData();
+        return o;
+    }
+    function CloseWindow(action) {
+        if (action == "close" && form.isChanged()) {
+            if (confirm("数据被修改了，是否先保存？")) {
+                return false;
+            }
+        }
+        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+        else window.close();
+    }
+    function onOk(e) {
+        SaveData();
+    }
+    function onCancel(e) {
+        CloseWindow("cancel");
+    }
+    function saveForm(form, options) {
+        if (typeof form == "string") form = new mini.Form(form);
+
+        if (typeof options == "string") options = { url: options };
+        options = $.extend({
+            callback: function (success) {
+            }
+        }, options);
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        var values = form.getData();
+        var json = mini.encode(values);
+        $.ajax({
+            url: options.url,
+            type: 'post',
+            data: { data: json },
+            cache: false,
+            success: function (text) {
+                if(text.code!=1){
+                    mini.showMessageBox({
+                        showModal: false,
+                        width: 250,
+                        title: "提示",
+                        iconCls: "mini-messagebox-warning",
+                        message: text.msg,
+                        timeout: 3000,
+                        x: "right",
+                        y: "bottom"
+                    });
+                    options.callback(false);
+                }
+                options.callback(true);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                //alert(jqXHR.responseText);
+                options.callback(false);
+            }
+        });
+    }
+    function onButtonEdit(e) {
+        var btnEdit = this;
+        mini.open({
+            url: "/role/toUserPage",
+            title: "角色列表",
+            width: 700,
+            height: 400,
+            ondestroy: function (action) {
+                if (action == "ok") {
+                    var iframe = this.getIFrameEl();
+                    var data = iframe.contentWindow.GetData();
+                    data = mini.clone(data);
+                    btnEdit.setValue(data.id);
+                    btnEdit.setText(data.text);
+                }
+            }
+        });
+
+    }
+</script>
+</body>
+</html>

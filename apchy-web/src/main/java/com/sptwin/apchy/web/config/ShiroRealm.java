@@ -2,6 +2,8 @@ package com.sptwin.apchy.web.config;
 
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
+import com.sptwin.apchy.web.sys.mapper.UserCustomMapper;
+import com.sptwin.apchy.web.sys.mapper.UserRoleCustomMapper;
 import com.sptwin.apchy.web.sys.service.RoleService;
 import com.sptwin.apchy.web.sys.service.UserService;
 import com.sptwin.spchy.model.common.Constant;
@@ -24,10 +26,11 @@ import java.util.Set;
 
 public class ShiroRealm extends AuthorizingRealm {
     public static final Logger log = LoggerFactory.getLogger(AuthorizingRealm.class);
+
     @Autowired
-    private UserService userService;
+    private UserCustomMapper userCustomMapper;
     @Autowired
-    private RoleService roleService;
+    private UserRoleCustomMapper userRoleCustomMapper;
     /**
      * 用户身份验证
      */
@@ -37,7 +40,7 @@ public class ShiroRealm extends AuthorizingRealm {
         String password = new String((char[]) token.getCredentials());
 
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        User user = this.userService.findByUserName(userName);
+        User user = this.userCustomMapper.findByUserName(userName);
 
         if (user == null) {
             throw new UnknownAccountException("用户名或密码错误！");
@@ -74,13 +77,10 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        //获取用户
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
-//        User user = (User) principalCollection.getPrimaryPrincipal();
-//        User user=(User) principalCollection.fromRealm(this.getClass().getName()).iterator().next();//获取session中的用户
+        String userName = (String) principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo info =  new SimpleAuthorizationInfo();
-
-        List<Role> roles=this.roleService.findRolesByUserId(user.getId());
+        User user = this.userCustomMapper.findByUserName(userName);
+        List<Role> roles=this.userRoleCustomMapper.getRoleByUserId(user.getId());
         //获取用户角色
         Set<String> roleSet = new HashSet<String>();
         for (Role role:roles) {

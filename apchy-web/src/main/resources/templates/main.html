@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!--<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">-->
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,14 +23,14 @@
         <div class="navbar-brand navbar-brand-compact">A</div>
     </div>
     <ul class="nav navbar-nav navbar-right">
-        <li ><a href="#"><i class="fa fa-paper-plane"></i> 代办事项<div th:text="${session.user.userName}"></div></a></li>
+        <li><a href="#"><i class="fa fa-paper-plane"></i> 代办事项</a></li>
         <li><a th:onclick="'javascript:changePassword()'"><i class="fa fa-pencil-square-o"></i> 修改密码</a></li>
         <li class="dropdown">
             <a class="dropdown-toggle userinfo">
                 <img class="user-img" th:src="@{/images/user.jpg}" />个人资料<i class="fa fa-angle-down"></i>
             </a>
             <ul class="dropdown-menu pull-right">
-                <li ><a href="#"><i class="fa fa-eye "></i> 用户信息</a></li>
+                <li ><a th:onclick="'javascript:userInfo()'"><i class="fa fa-eye "></i> 用户信息</a></li>
                 <li><a onclick="javascript:window.location.href='/logout'"><i class="fa fa-user"></i> 退出登录</a></li>
             </ul>
         </li>
@@ -93,65 +94,121 @@
         </table>
     </div>
 </div>
-
+<div id="userWindow" class="mini-window" title="用户信息"
+     style="width: 270px;" showModal="true" allowResize="true"
+     allowDrag="true">
+    <div id="userform" class="form">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 80px;">账号：</td>
+                <td style="width: 150px;">
+                    <input id="userName" class="mini-textbox" readOnly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 80px;">真实姓名：</td>
+                <td style="width: 150px;">
+                    <input id="realName" class="mini-textbox" readOnly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 80px;">状态：</td>
+                <td style="width: 150px;">
+                    <input id="locked" class="mini-textbox" readOnly="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 80px;">创建时间：</td>
+                <td style="width: 150px;">
+                    <input id="gmtCreate" class="mini-datepicker" format="yyyy-MM-dd HH:mm:ss" readOnly="true"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
 </body>
-</html>
-<script>
-mini.parse();
-var chpwWindow = mini.get("chpwWindow");
-function changePassword() {
-    chpwWindow.show();
-    mini.get("password").focus();
-}
-function cancelRow() {
-    chpwWindow.hide();
-}
-function updatePw() {
-    //判断两次密码是否一致
-    var userNewPw = mini.get("#userNewPw").value;
-    var userNewPwConfirm = mini.get("#userNewPwConfirm").value;
-    if (userNewPw != userNewPwConfirm) {
-        alert("密码不一致");
-        return;
-    }
-    var form = new mini.Form("#chpwform");
-    form.validate();
-    if (form.isValid() == false)
-        return;
-    var o = form.getData();
-
-    var json = mini.encode(o);//这里有一个坑：[o]得到的是一个数组对象，o得到的是一个对象
-    $.ajax({
-        url : "/changePassword",
-        type: "post",
-        data : {
-            json : json
-        },
-        success : function(data) {
-            chpwWindow.hide();
-            if(data.code==1){
-                mini.showTips({
-                    content : "<b>成功</b> <br/>密码修改成功",
-                    state : "success",
-                    x : "center",
-                    y : "center",
-                    timeout : 3000
-                });
-            }else{
-                mini.showMessageBox({
-                    showModal: false,
-                    width: 250,
-                    title: "提示",
-                    iconCls: "mini-messagebox-warning",
-                    message: data.msg,
-                    timeout: 3000,
-                    x: "right",
-                    y: "bottom"
-                });
-            }
+<script th:inline="javascript">
+    mini.parse();
+    var chpwWindow = mini.get("chpwWindow");
+    var userWindow = mini.get("userWindow");
+    function userInfo(){
+        userWindow.show();
+        /*<![CDATA[*/
+        var userName = /*[[${session.user.userName}]]*/;
+        var realName = /*[[${session.user.realName}]]*/;
+        var locked = /*[[${session.user.locked}]]*/;
+        var gmtCreate = /*[[${session.user.gmtCreate}]]*/;
+        mini.get("userName").setValue(userName);
+        mini.get("realName").setValue(realName);
+        if(locked==1){
+            mini.get("locked").setValue("正常");
+        }else{
+            mini.get("locked").setValue("锁定");
         }
-    });
-}
+        mini.get("gmtCreate").setValue(gmtCreate);
+        var form = new mini.Form("#userform");
+        var fields = form.getFields();
+        for (var i = 0, l = fields.length; i < l; i++) {
+            var c = fields[i];
+            if (c.setReadOnly) c.setReadOnly(true);     //只读
+            if (c.setIsValid) c.setIsValid(true);      //去除错误提示
+            if (c.addCls) c.addCls("asLabel");          //增加asLabel外观
+        }
+        /*]]>*/
+    }
+    function changePassword() {
+        chpwWindow.show();
+        mini.get("password").focus();
+    }
+    function cancelRow() {
+        chpwWindow.hide();
+    }
+    function updatePw() {
+        //判断两次密码是否一致
+        var userNewPw = mini.get("#userNewPw").value;
+        var userNewPwConfirm = mini.get("#userNewPwConfirm").value;
+        if (userNewPw != userNewPwConfirm) {
+            alert("密码不一致");
+            return;
+        }
+        var form = new mini.Form("#chpwform");
+        form.validate();
+        if (form.isValid() == false)
+            return;
+        var o = form.getData();
+
+        var json = mini.encode(o);//这里有一个坑：[o]得到的是一个数组对象，o得到的是一个对象
+        $.ajax({
+            url : "/changePassword",
+            type: "post",
+            data : {
+                json : json
+            },
+            success : function(data) {
+                chpwWindow.hide();
+                if(data.code==1){
+                    mini.showTips({
+                        content : "<b>成功</b> <br/>密码修改成功",
+                        state : "success",
+                        x : "center",
+                        y : "center",
+                        timeout : 3000
+                    });
+                }else{
+                    mini.showMessageBox({
+                        showModal: false,
+                        width: 250,
+                        title: "提示",
+                        iconCls: "mini-messagebox-warning",
+                        message: data.msg,
+                        timeout: 3000,
+                        x: "right",
+                        y: "bottom"
+                    });
+                }
+            }
+        });
+    }
     function activeTab(item) {
         var tabs = mini.get("mainTabs");
         var tab = tabs.getTab(item.id);
@@ -181,7 +238,7 @@ function updatePw() {
             type : "post",
             dataType : "json",
             sync : true,
-            url: "/menu/getLeftMenu",
+            url: "/resource/getLeftMenu",
             success: function (text) {
                 var data = mini.decode(text);
                 menu.loadData(data);
@@ -206,3 +263,4 @@ function updatePw() {
     });
 
 </script>
+</html>

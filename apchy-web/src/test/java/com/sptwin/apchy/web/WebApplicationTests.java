@@ -1,7 +1,7 @@
 package com.sptwin.apchy.web;
 
 import com.sptwin.apchy.web.entity.Role;
-import com.sptwin.apchy.web.sys.pojo.UserCustom;
+import com.sptwin.apchy.web.model.UserCustom;
 import com.sptwin.apchy.web.sys.service.RoleService;
 import com.sptwin.apchy.web.sys.service.UserService;
 import com.sptwin.spchy.model.utils.EncryptUtil;
@@ -25,10 +25,9 @@ public class WebApplicationTests {
 		UserCustom userCustom = new UserCustom();
 		userCustom.setUserName("admin");
 		String salt = userCustom.getUserName()+new SecureRandomNumberGenerator().nextBytes().toHex();
-		userCustom.setPassword(EncryptUtil.entryptPassword2( "abc123",salt));
+		userCustom.setPassword(EncryptUtil.entryptPassword( "abc123",salt));
 		userCustom.setSalt(salt);
 		userCustom.setLocked(1);
-		userCustom.setRoles("1");
 		userService.insertUser(userCustom);
 	}
 	@Test
@@ -37,6 +36,5 @@ public class WebApplicationTests {
 		role.setRoleName("admin");
 		role.setDescription("超级管理员，拥有所有权限");
 		role.setAvailable(1);
-		roleService.insertRole(role);
 	}
 }

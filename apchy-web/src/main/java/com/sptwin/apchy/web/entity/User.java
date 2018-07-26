@@ -1,19 +1,23 @@
 package com.sptwin.apchy.web.entity;
 
-import java.io.Serializable;
+import java.util.Date;
 
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 6903837541049854319L;
+public class User {
     private Long id;
 
     private String userName;
+
+    private String realName;
 
     private String password;
 
     private String salt;
 
     private Integer locked;
+
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     public Long getId() {
         return id;
@@ -29,6 +33,14 @@ public class User implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public String getPassword() {
@@ -53,5 +65,21 @@ public class User implements Serializable {
 
     public void setLocked(Integer locked) {
         this.locked = locked;
+    }
+
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 }

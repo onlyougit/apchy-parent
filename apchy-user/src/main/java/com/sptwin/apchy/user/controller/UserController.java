@@ -36,7 +36,7 @@ public class UserController {
     @GetMapping("/users")
     public List<Order> findOrderByUserName(){
         User user = new User();
-        user.setId(5);
+        user.setId(5l);
         ResponseEntity<List<Order>> responseEntity = restTemplate.exchange(ORDER_SERVICE_URL + "/order/findOrder/" + user.getId(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Order>>() {
         });
         return responseEntity.getBody();

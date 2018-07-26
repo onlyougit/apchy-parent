@@ -1,4 +1,4 @@
-package com.sptwin.apchy.web.sys.pojo;
+package com.sptwin.apchy.web.model;
 
 import java.util.List;
 

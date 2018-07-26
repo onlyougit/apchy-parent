@@ -1,6 +1,9 @@
 package com.sptwin.spchy.model.enums;
 
-public enum RoleStatus {
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum Available {
     INVALID(0, "无效"),
     EFFECTIVE(1, "有效"),
 
@@ -12,7 +15,7 @@ public enum RoleStatus {
     /* 描述 */
     private String text;
 
-    RoleStatus(Integer code, String text) {
+    Available(Integer code, String text) {
         this.code = code;
         this.text = text;
     }

@@ -1,7 +1,9 @@
-package com.sptwin.apchy.web.sys.pojo;
+package com.sptwin.apchy.web.model;
 
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
+import com.sptwin.spchy.model.enums.UserLockStatus;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -11,12 +13,40 @@ public class UserCustom extends User {
 
     private List<Role> roleList;
 
-    private String roles;
+    private String roleNames;
+
+    private String roleIds;
+
+    private UserLockStatus userLockStatusEnum;
 
     //新密码
     private String userNewPw;
     //密码确认
     private String userNewPwConfirm;
+
+    public String getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(String roleIds) {
+        this.roleIds = roleIds;
+    }
+
+    public UserLockStatus getUserLockStatusEnum() {
+        return userLockStatusEnum;
+    }
+
+    public void setUserLockStatusEnum(UserLockStatus userLockStatusEnum) {
+        this.userLockStatusEnum = userLockStatusEnum;
+    }
+
+    public String getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(String roleNames) {
+        this.roleNames = roleNames;
+    }
 
     public String getUserNewPw() {
         return userNewPw;
@@ -40,14 +70,6 @@ public class UserCustom extends User {
 
     public void setRoleList(List<Role> roleList) {
         this.roleList = roleList;
-    }
-
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
     }
 
     public String getAuthCode() {

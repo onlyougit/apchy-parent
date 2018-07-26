@@ -7,28 +7,8 @@ import org.apache.shiro.util.ByteSource;
 
 public class EncryptUtil {
 
-    /**
-     * 加密
-     * @param password
-     * @param safe
-     * @return
-     */
-    public static String entryptPassword(String password, String safe) {
-        byte[] salt = EncodeUtil.decodeHex(safe);
-        byte[] hashPassword = DigestUtil.sha1(password.getBytes(), salt, Constant.HASH_INTERATIONS);
-        return EncodeUtil.encodeHex(hashPassword); // 加密
-    }
 
-    /**
-     * 获取安全密钥
-     * @return
-     */
-    public static String getSafe() {
-        byte[] safe = DigestUtil.generateSafe(Constant.SAFE_SIZE);
-        return EncodeUtil.encodeHex(safe);
-    }
-
-    public static String entryptPassword2(String password, String salt){
+    public static String entryptPassword(String password, String salt){
         SimpleHash hash = new SimpleHash(Constant.ALGORITHMNAME, password, ByteSource.Util.bytes(salt), Constant.HASHITERATIONS);
         String encodedPassword = hash.toHex();
         return encodedPassword;

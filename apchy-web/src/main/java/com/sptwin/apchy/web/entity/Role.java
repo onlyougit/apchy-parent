@@ -1,5 +1,7 @@
 package com.sptwin.apchy.web.entity;
 
+import java.util.Date;
+
 public class Role {
     private Long id;
 
@@ -8,6 +10,10 @@ public class Role {
     private String description;
 
     private Integer available;
+
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     public Long getId() {
         return id;
@@ -39,5 +45,21 @@ public class Role {
 
     public void setAvailable(Integer available) {
         this.available = available;
+    }
+
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 }

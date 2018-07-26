@@ -11,9 +11,10 @@ public enum ApplicationError {
 	PW_UPDATE_FAIL("密码更新失败！", "1004"),
 	TWO_PASSWORD_ERROR("两次密码不一致更新失败！", "1005"),
 	PASSWORD_ERROR("原密码不正确！", "1006"),
+	USERNAME_EXISTED("账号已被使用", "1007"),
 
 	;
-	private String message;
+    private String message;
 	private String code;
 
 	private ApplicationError(String message, String code) {
