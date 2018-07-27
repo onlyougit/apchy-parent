@@ -19,6 +19,8 @@
 
 <form id="form1" method="post">
     <input name="id" class="mini-hidden" />
+    <input id="parentId" name="parentId" class="mini-hidden" />
+    <input id="parentIds" name="parentIds" class="mini-hidden" />
     <fieldset style="border:solid 1px #aaa;padding:3px;">
         <legend >资源面板</legend>
         <div style="padding:5px;">
@@ -36,23 +38,23 @@
                 <tr>
                     <td style="width:100px;"> 图标：</td>
                     <td style="width:170px;">
-                        <input id="iconCls" name="iconCls" class="mini-combobox" style="width:150px;"
+                        <input id="iconCls" name="iconCls" class="mini-combobox" style="width:200px;"
                                textField="text" valueField="code" emptyText="请选择..."
-                               url="/base/iconCls" required="true" showNullItem="true"
+                               th:url="@{/base/iconCls}" showNullItem="true" popupHeight="180"
                                nullItemText="请选择..."/>
                     </td>
                     <td style="width:100px;"> 类型：</td>
                     <td style="width:170px;">
-                        <input id="resourceType" name="resourceType" class="mini-combobox" style="width:150px;"
+                        <input id="resourceType" name="resourceType" class="mini-combobox" style="width:200px;"
                                textField="text" valueField="code" emptyText="请选择..." required="true"
-                               url="/base/resourceType" required="true" showNullItem="true"
+                               th:url="@{/base/resourceType}" showNullItem="true"
                                nullItemText="请选择..."/>
                     </td>
                 </tr>
                 <tr>
                     <td style="width:100px;">显示顺序：</td>
                     <td style="width:170px;">
-                        <input name="priority" changeOnMousewheel="false" class="mini-spinner" required="true"  minValue="1" maxValue="30"/>
+                        <input name="priority" changeOnMousewheel="false" class="mini-spinner" required="true"  minValue="1" maxValue="30" style="width:200px;"/>
                     </td>
                     <td style="width:80px;">权限</td>
                     <td>
@@ -74,7 +76,7 @@
 
     function SaveData() {
         saveForm(form, {
-            url: "/resource/insertOrEditResource",
+            url: "/resource/insertOrEdit",
             callback: function (success) {
                 if (success) CloseWindow("save");
                 //else CloseWindow();
@@ -88,7 +90,6 @@
         if (data.action == "edit") {
             //跨页面传递的数据对象，克隆后才可以安全使用
             data = mini.clone(data);
-
             $.ajax({
                 url: "/resource/editQuery?id=" + data.id,
                 cache: false,
@@ -98,6 +99,9 @@
                     form.setChanged(false);
                 }
             });
+        }else{
+            mini.get("parentId").setValue(data.parentId);
+            mini.get("parentIds").setValue(data.parentIds);
         }
     }
 

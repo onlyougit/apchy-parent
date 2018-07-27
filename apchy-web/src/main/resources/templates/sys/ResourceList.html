@@ -26,24 +26,21 @@
             <tr>
                 <td>资源名称：</td>
                 <td>
-                    <input name="resourceName" emptyText="请输入资源名称" class="mini-textbox" onenter="search"/>
-                </td>
-                <td align="center">
-                    <a class="mini-button" iconCls="icon-search" onClick="search()">搜索</a>&nbsp;
-                    <a class="mini-button" iconCls="icon-reload" onClick="clean()">重置</a>
+                    <input id="key" class="mini-textbox" style="width:150px;" onenter="onKeyEnter"/>
+                    <a class="mini-button" style="width:60px;" onclick="search()">查询</a>
                 </td>
             </tr>
 
         </table>
     </div>
 </div>
-<div id="treegrid1" class="mini-treegrid" style="width:99%;height:80%;"
+<div id="treegrid1" class="mini-treegrid" style="width:99%;height:90%;"
      url="/resource/queryResource" showTreeIcon="true"
-     treeColumn="taskname" idField="id" parentField="parentId" resultAsTree="false" expandOnLoad="false"
+     treeColumn="taskname" idField="id" parentField="parentId" resultAsTree="false" expandOnLoad="true"
 >
     <div property="columns">
         <div type="indexcolumn"></div>
-        <div name="taskname" field="resourceName" width="200" headerAlign="center" align="center">资源名称</div>
+        <div name="taskname" field="resourceName" width="200">资源名称</div>
         <div field="resourceUrl" width="100" headerAlign="center" align="center">资源路径</div>
         <div field="resourceTypeEnum.text" width="100" headerAlign="center" align="center">类型</div>
         <div field="permission" width="100" headerAlign="center" align="center">权限</div>
@@ -58,47 +55,50 @@
 <script type="text/javascript">
 
     mini.parse();
-    var grid = mini.get("treegrid1");
-    //grid.expandLevel(0);
+    var tree = mini.get("treegrid1");
+    //tree.expandLevel(0);
     function clean() {
         form.reset();
     }
     function onActionRenderer(e) {
-        console.log(e);
         var record = e.record;
-        var uid = record._uid;
-        console.log(record);
+        var uid = record.id;
+        var parentIds = tree.getAncestors(record);
+        var args = [0];
+        for (var i = 0; i < parentIds.length; i++) {
+            args.push(parentIds[i].id);
+        }
+        args.push(uid);
+        var pIds = args.join('/');
         var rowIndex = e.rowIndex;
-        var s = '<a class="Edit_Button" href="javascript:add(\'' + uid + '\')">添加子节点</a>&nbsp;'
-                    + '<a class="Edit_Button" href="javascript:edit(\'' + uid + '\')">编辑</a>&nbsp;'
-                    + '<a class="Delete_Button" href="javascript:delRow(\'' + uid + '\')">删除</a>';
+        var s ;
         if(record.resourceTypeEnum.code==1){
             s = '<a class="Edit_Button" href="javascript:edit(\'' + uid + '\')">编辑</a>&nbsp;'
                     + '<a class="Delete_Button" href="javascript:delRow(\'' + uid + '\')">删除</a>';
         }else{
             if(record.parentId==0){
-                s = '<a class="Edit_Button" href="javascript:add(\'' + uid + '\')">添加子节点</a>&nbsp;'
-                    + '<a class="Edit_Button" href="javascript:edit(\'' + uid + '\')">编辑</a>&nbsp;';
+                s = '<a class="Edit_Button" href="javascript:add(\'' + uid + '\',\'' + pIds + '\')">添加子节点</a>&nbsp;'
+                    + '<a class="Edit_Button" href="javascript:edit(\'' + uid + '\')">编辑</a>';
             }else{
-                s = '<a class="Edit_Button" href="javascript:add(\'' + uid + '\')">添加子节点</a>&nbsp;'
+                s = '<a class="Edit_Button" href="javascript:add(\'' + uid + '\',\'' + pIds + '\')">添加子节点</a>&nbsp;'
                     + '<a class="Edit_Button" href="javascript:edit(\'' + uid + '\')">编辑</a>&nbsp;'
                     + '<a class="Delete_Button" href="javascript:delRow(\'' + uid + '\')">删除</a>';
             }
         }
         return s;
     }
-    function add() {
+    function add(uid,pIds) {
         mini.open({
             url: "/resource/addEditPage",
-            title: "资源添加", width: 500, height: 300,
+            title: "资源添加", width: 600, height: 300,
             onload: function () {
                 var iframe = this.getIFrameEl();
-                var data = { action: "new" };
+                var data = { action: "new",parentId:uid,parentIds:pIds };
                 iframe.contentWindow.SetData(data);
             },
             ondestroy: function (action) {
                 if (action == "save") {
-                    grid.reload();
+                    tree.reload();
                     mini.showTips({
                         content: "<b>成功</b> <br/>添加成功",
                         state: "success",
@@ -111,11 +111,11 @@
         });
     }
     function edit() {
-        var row = grid.getSelected();
+        var row = tree.getSelected();
         if (row) {
             mini.open({
                 url: "/resource/addEditPage",
-                title: "资源编辑", width: 300, height: 220,
+                title: "资源编辑", width: 600, height: 300,
                 onload: function () {
                     var iframe = this.getIFrameEl();
                     var data = { action: "edit", id: row.id };
@@ -125,7 +125,7 @@
                 ondestroy: function (action) {
                     //var iframe = this.getIFrameEl();
                     if (action == "save") {
-                        grid.reload();
+                        tree.reload();
                         mini.showTips({
                             content: "<b>成功</b> <br/>添加成功",
                             state: "success",
@@ -143,14 +143,14 @@
 
     }
     function delRow(row_uid) {
-        var row = grid.getRowByUID(row_uid);
+        var row = tree.getRowByUID(row_uid);
         if (row) {
             if (confirm("确定删除此记录？")) {
-                grid.loading("删除中，请稍后......");
+                tree.loading("删除中，请稍后......");
                 $.ajax({
-                    url: "/resource/deleteResource?id=" + row.id,
+                    url: "/resource/deleteOne?id=" + row.id,
                     success: function (text) {
-                        grid.reload();
+                        tree.reload();
                         mini.showTips({
                             content: "<b>成功</b> <br/>删除成功",
                             state: "success",
@@ -165,30 +165,38 @@
             }
         }
     }
-    /*function remove() {
-        var rows = grid.getSelecteds();
-        if (rows.length > 0) {
-            if (confirm("确定删除选中记录？")) {
-                var ids = [];
-                for (var i = 0, l = rows.length; i < l; i++) {
-                    var r = rows[i];
-                    ids.push(r.id);
-                }
-                var id = ids.join(',');
-                grid.loading("操作中，请稍后......");
-                $.ajax({
-                    url: "/resource/batchDeleteResource?ids=" +id,
-                    success: function (text) {
-                        grid.reload();
-                    },
-                    error: function () {
-                    }
-                });
-            }
+    function search() {
+        var key = mini.get("key").getValue();
+        if (key == "") {
+
         } else {
-            alert("请选中一条记录");
+            key = key.toLowerCase();
+
+            //查找到节点
+            var nodes = tree.findNodes(function (node) {
+                var text = node.resourceName ? node.resourceName.toLowerCase() : "";
+                if (text.indexOf(key) != -1) {
+                    return true;
+                }
+            });
+
+            //展开所有找到的节点
+            for (var i = 0, l = nodes.length; i < l; i++) {
+                var node = nodes[i];
+                tree.expandPath(node);
+            }
+
+            //第一个节点选中并滚动到视图
+            var firstNode = nodes[0];
+            if (firstNode) {
+                tree.selectNode(firstNode);
+                tree.scrollIntoView(firstNode);
+            }
         }
-    }*/
+    }
+    function onKeyEnter(e) {
+        search();
+    }
 </script>
 </body>
 </html>

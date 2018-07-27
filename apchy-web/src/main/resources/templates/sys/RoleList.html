@@ -43,6 +43,7 @@
             <tr>
                 <td style="width:100%;">
                     <a class="mini-button" iconCls="icon-add" onclick="add()">添加</a>
+                    <a class="mini-button" iconCls="icon-edit" onclick="authorization()">授权</a>
                 </td>
             </tr>
         </table>
@@ -139,6 +140,36 @@
             alert("请选中一条记录");
         }
 
+    }
+    function authorization() {
+        var row = grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "/role/roleResourcePage",
+                title: "授权", width: 1000, height: 800,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = {id: row.id };
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    //var iframe = this.getIFrameEl();
+                    if (action == "save") {
+                        grid.reload();
+                        mini.showTips({
+                            content: "<b>成功</b> <br/>授权成功",
+                            state: "success",
+                            x: "center",
+                            y: "center",
+                            timeout: 3000
+                        });
+                    }
+                }
+            });
+
+        } else {
+            alert("请选中一条记录");
+        }
     }
     function delRow(row_uid) {
         var row = grid.getRowByUID(row_uid);

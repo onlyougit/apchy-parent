@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -31,6 +32,25 @@ public class RoleController {
     @GetMapping("/toUserPage")
     public String toUserPage() {
         return "sys/RoleToUser";
+    }
+    @GetMapping("/roleResourcePage")
+    public String roleResourcePage() {
+        return "sys/RoleResource";
+    }
+
+    @RequestMapping(value = "/queryPermission")
+    public
+    @ResponseBody
+    List queryPermission(Long roleId){
+        List list = roleService.queryPermission(roleId);
+        return list;
+    }
+    @RequestMapping("/savePermission")
+    @ResponseBody
+    public
+    void savePermission(String data) throws Exception {
+        System.out.println(data);
+        //roleService.savePermission(role);
     }
     /**
      * 分页查询

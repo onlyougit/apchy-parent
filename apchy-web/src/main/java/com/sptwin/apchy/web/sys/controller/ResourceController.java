@@ -2,6 +2,8 @@ package com.sptwin.apchy.web.sys.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.sptwin.apchy.web.entity.Resource;
+import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.model.MenuLeft;
 import com.sptwin.apchy.web.model.RoleCustom;
 import com.sptwin.apchy.web.sys.service.ResourceService;
@@ -70,5 +72,39 @@ public class ResourceController {
     List queryResource(){
         List list = resourceService.queryResource();
         return list;
+    }
+    /**
+     * 添加、编辑
+     * @param data
+     * @throws Exception
+     */
+    @RequestMapping("/insertOrEdit")
+    @ResponseBody
+    public
+    void insertOrEdit(String data) throws Exception {
+        Resource resource = JSON.parseObject(data, Resource.class);
+        resourceService.insertOrEdit(resource);
+    }
+    /**
+     * 编辑查询
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/editQuery")
+    @ResponseBody
+    public
+    Resource editQuery(Long id) {
+        return resourceService.editQuery(id);
+    }
+    /**
+     * 删除
+     * @param id
+     */
+    @RequestMapping("/deleteOne")
+    @ResponseBody
+    public
+    void deleteOne(Long id) {
+        //List idList = Arrays.asList(ids.split(","));
+        resourceService.deleteOne(id);
     }
 }

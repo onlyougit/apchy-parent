@@ -15,4 +15,6 @@ public interface RoleService {
     Role editQuery(Long id);
 
     void deleteRole(Long id);
+
+    List queryPermission(Long roleId);
 }
