@@ -201,6 +201,29 @@ zuul:
 6、IDEA开启自动build
 setting -> Compile -> Build project automatically --> 选中保存退出
 CTRL + SHIFT + A --> 查找Registry --> 找到并勾选compiler.automake.allow.when.app.running
+data = "[
+{"id":1,"name":"资源[root]","pid":0,"functions":null,"children":[
+{"id":2,"name":"系统管理","pid":1,"functions":null,"children":[
+{"id":3,"name":"用户管理","pid":2,"functions":[
+{"id":8,"name":"用户添加","checked":true},
+{"id":9,"name":"用户编辑","checked":false},
+{"id":11,"name":"用户删除","checked":false},
+{"id":12,"name":"用户列表","checked":true}
+],"expanded":true,"_id":3,"_uid":3,"_pid":2,"_level":2},
+{"id":6,"name":"角色管理","pid":2,"functions":[
+{"id":10,"name":"角色添加","checked":true},
+{"id":13,"name":"角色编辑","checked":false},
+{"id":14,"name":"角色删除","checked":false},
+{"id":15,"name":"角色列表","checked":true}
+],"expanded":true,"_id":4,"_uid":4,"_pid":2,"_level":2},
+{"id":7,"name":"资源管理","pid":2,"functions":[
+{"id":16,"name":"资源添加","checked":true},
+{"id":17,"name":"资源编辑","checked":false},
+{"id":18,"name":"资源删除","checked":false},
+{"id":19,"name":"资源列表","checked":true}
+],"expanded":true,"_id":5,"_uid":5,"_pid":2,"_level":2}
+],"expanded":true,"_id":2,"_uid":2,"_pid":1,"_level":1},
+{"id":5,"name":"运维管理","pid":1,"functions":null,"expanded"… View
 
 
 
