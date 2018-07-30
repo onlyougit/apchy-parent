@@ -11,17 +11,7 @@ public class MenuLeft {
 
     private String url;
 
-    private Long parentId;
-
     private List<MenuLeft> children;
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
 
     public Long getId() {
         return id;

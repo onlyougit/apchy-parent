@@ -48,7 +48,7 @@ public class ResourceController {
         return list;
     }
 
-    /*public String readToString(String fileName) {
+    public String readToString(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL url = classLoader.getResource(fileName);
         String encoding = "UTF-8";
@@ -71,7 +71,7 @@ public class ResourceController {
             e.printStackTrace();
             return null;
         }
-    }*/
+    }
     @RequestMapping(value = "/queryResource")
     public
     @ResponseBody
