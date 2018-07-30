@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.sptwin.apchy.web.entity.Resource;
 import com.sptwin.apchy.web.entity.Role;
+import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.model.MenuLeft;
 import com.sptwin.apchy.web.model.RoleCustom;
+import com.sptwin.apchy.web.service.SessionService;
 import com.sptwin.apchy.web.sys.service.ResourceService;
 import com.sptwin.spchy.model.common.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("resource")
@@ -25,6 +28,8 @@ public class ResourceController {
 
     @Autowired
     private ResourceService resourceService;
+    @Autowired
+    private SessionService sessionService;
 
     @GetMapping
     public String resourcePage() {
@@ -38,11 +43,12 @@ public class ResourceController {
     @RequestMapping("/getLeftMenu")
     @ResponseBody
     public List<MenuLeft> getLeftMenu(){
-        String jsonString = readToString("menu.txt");
-        List<MenuLeft> list = JSONArray.parseArray(jsonString,MenuLeft.class);
+        User user = sessionService.getUser();
+        List<MenuLeft> list = resourceService.queryMenuByUserId(user.getId());
         return list;
     }
-    public String readToString(String fileName) {
+
+    /*public String readToString(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL url = classLoader.getResource(fileName);
         String encoding = "UTF-8";
@@ -65,7 +71,7 @@ public class ResourceController {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
     @RequestMapping(value = "/queryResource")
     public
     @ResponseBody

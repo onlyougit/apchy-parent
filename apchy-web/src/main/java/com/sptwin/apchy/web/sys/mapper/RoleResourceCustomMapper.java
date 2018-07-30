@@ -1,5 +1,6 @@
 package com.sptwin.apchy.web.sys.mapper;
 
+import com.sptwin.apchy.web.entity.Resource;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,5 +19,5 @@ public interface RoleResourceCustomMapper {
 
     void batchInsert(@Param("roleId") Long roleId, @Param("list")List<Long> resourceIds);
 
-    Set<String> queryResourceByRoleIds(@Param("list")Set<Long> roleSet);
+    Set<Resource> queryResourceByRoleIds(@Param("list")Set<Long> roleSet);
 }

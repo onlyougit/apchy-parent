@@ -40,6 +40,11 @@ public class RoleController {
         return "sys/RoleResource";
     }
 
+    /**
+     * 角色授权查询
+     * @param roleId
+     * @return
+     */
     @RequestMapping(value = "/queryPermission")
     public
     @ResponseBody
@@ -47,6 +52,13 @@ public class RoleController {
         List list = roleService.queryPermission(roleId);
         return list;
     }
+
+    /**
+     * 授权
+     * @param roleId
+     * @param data
+     * @throws Exception
+     */
     @RequestMapping("/savePermission")
     @ResponseBody
     public

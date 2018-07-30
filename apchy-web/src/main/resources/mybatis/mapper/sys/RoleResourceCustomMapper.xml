@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sptwin.apchy.web.sys.mapper.RoleResourceCustomMapper">
-  <select id="queryResourceByRoleIds" resultType="java.lang.String">
-    SELECT r.permission from t_sys_role_resource rr
+  <resultMap id="BaseResultMap" type="com.sptwin.apchy.web.entity.Resource">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="resource_type" jdbcType="INTEGER" property="resourceType" />
+    <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+    <result column="priority" jdbcType="INTEGER" property="priority" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+  </resultMap>
+  <select id="queryResourceByRoleIds" resultMap="BaseResultMap">
+    SELECT r.id,r.resource_name,r.resource_type,r.icon_cls,r.priority,r.parent_id,r.permission from t_sys_role_resource rr
     left join t_sys_resource r on rr.resource_id=r.id
     WHERE rr.role_id in
     <foreach collection="list" item="item" open="(" close=")" separator=",">

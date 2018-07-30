@@ -2,6 +2,7 @@ package com.sptwin.apchy.web;
 
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.model.UserCustom;
+import com.sptwin.apchy.web.sys.service.ResourceService;
 import com.sptwin.apchy.web.sys.service.RoleService;
 import com.sptwin.apchy.web.sys.service.UserService;
 import com.sptwin.spchy.model.utils.EncryptUtil;
@@ -20,6 +21,8 @@ public class WebApplicationTests {
 	private UserService userService;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private ResourceService resourceService;
 	@Test
 	public void testAddUser() {
 		UserCustom userCustom = new UserCustom();
@@ -36,5 +39,9 @@ public class WebApplicationTests {
 		role.setRoleName("admin");
 		role.setDescription("超级管理员，拥有所有权限");
 		role.setAvailable(1);
+	}
+	@Test
+	public void queryMenuByUserId() {
+		resourceService.queryMenuByUserId(4l);
 	}
 }

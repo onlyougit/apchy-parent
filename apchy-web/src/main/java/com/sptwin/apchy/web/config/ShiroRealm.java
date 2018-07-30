@@ -93,8 +93,8 @@ public class ShiroRealm extends AuthorizingRealm {
         }
         info.setRoles(roleSet);
         //获取用户权限
-        Set<String> resourceSet = roleResourceCustomMapper.queryResourceByRoleIds(roles.stream().map(w->w.getId()).collect(Collectors.toSet()));
-        info.setStringPermissions(resourceSet);
+        Set<Resource> resourceSet = roleResourceCustomMapper.queryResourceByRoleIds(roles.stream().map(w->w.getId()).collect(Collectors.toSet()));
+        info.setStringPermissions(resourceSet.stream().map(w->w.getPermission()).collect(Collectors.toSet()));
         return info;
     }
 }
