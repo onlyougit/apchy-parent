@@ -18,6 +18,7 @@
     </style>
 </head>
 <body>
+<input id="roleId" class="mini-hidden" />
 <div style="width:99%;">
     <div class="mini-toolbar" style="border-bottom:0;padding:0px;">
         <table style="width:100%;">
@@ -94,16 +95,17 @@
     }
     function SetData(data) {
         data = mini.clone(data);
+        mini.get("roleId").setValue(data.id);
         tree.setUrl("/role/queryPermission?roleId="+data.id);
     }
 
     function saveData() {
         var json = getFuns();
-        alert('---'+json);
+        var roleId = mini.get("roleId").getValue();
         $.ajax({
             url: "/role/savePermission",
             type: 'post',
-            data: { data: json },
+            data: { data: json,roleId:roleId },
             cache: false,
             success: function (text) {
                 CloseWindow("save");

@@ -4,10 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.sptwin.apchy.web.entity.Resource;
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
-import com.sptwin.apchy.web.model.Functions;
-import com.sptwin.apchy.web.model.Permission;
-import com.sptwin.apchy.web.model.ResourceCustom;
-import com.sptwin.apchy.web.model.RoleCustom;
+import com.sptwin.apchy.web.model.*;
 import com.sptwin.apchy.web.service.SessionService;
 import com.sptwin.apchy.web.sys.mapper.ResourceCustomMapper;
 import com.sptwin.apchy.web.sys.mapper.RoleCustomMapper;
@@ -19,6 +16,7 @@ import com.sptwin.spchy.model.common.Pagination;
 import com.sptwin.spchy.model.enums.Available;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -120,5 +118,38 @@ public class RoleServiceImpl implements RoleService {
             });
         }
         return result;
+    }
+
+    @Transactional
+    @Override
+    public void savePermission(Long roleId ,List<PermissionCustom> permissionCustom) {
+        List<Functions> checked = new ArrayList<>();
+        permissionCustom.forEach(w->{
+            List<PermissionCustom> permissionCustomList = w.getChildren();
+            if(null != permissionCustomList && permissionCustomList.size()>0){
+                permissionCustom.forEach(x->{
+                    List<PermissionCustom> permissionCustomList2 = x.getChildren();
+                    if(null != permissionCustomList2 && permissionCustomList2.size()>0){
+                        permissionCustomList2.forEach(y->{
+                            List<PermissionCustom> permissionCustomList3 = y.getChildren();
+                            if(null != permissionCustomList3 && permissionCustomList3.size()>0){
+                                permissionCustomList3.forEach(l->{
+                                    List<Functions> functions = l.getFunctions();
+                                    functions=functions.stream().filter(k->k.getChecked()).collect(Collectors.toList());
+                                    if(null != functions && functions.size()>0){
+                                        checked.addAll(functions);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        List<Long> resourceIds = checked.stream().map(w->w.getId()).collect(Collectors.toList());
+        roleResourceCustomMapper.deleteByRoleId(roleId);
+        roleResourceCustomMapper.batchInsert(roleId,resourceIds);
+        System.out.println();
+
     }
 }

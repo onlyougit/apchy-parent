@@ -1,7 +1,9 @@
 package com.sptwin.apchy.web.sys.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.sptwin.apchy.web.entity.Role;
+import com.sptwin.apchy.web.model.PermissionCustom;
 import com.sptwin.apchy.web.model.RoleCustom;
 import com.sptwin.apchy.web.sys.service.RoleService;
 import com.sptwin.spchy.model.common.Pagination;
@@ -48,9 +50,9 @@ public class RoleController {
     @RequestMapping("/savePermission")
     @ResponseBody
     public
-    void savePermission(String data) throws Exception {
-        System.out.println(data);
-        //roleService.savePermission(role);
+    void savePermission(Long roleId , String data) throws Exception {
+        List<PermissionCustom> permissionCustom = JSON.parseArray(data,PermissionCustom.class);
+        roleService.savePermission(roleId,permissionCustom);
     }
     /**
      * 分页查询

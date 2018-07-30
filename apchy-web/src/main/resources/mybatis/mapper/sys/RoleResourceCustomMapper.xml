@@ -9,4 +9,10 @@
   <sql id="Base_Column_List">
     id, role_id, resource_id
   </sql>
+  <insert id="batchInsert">
+    insert into t_sys_role_resource (role_id,resource_id) VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{roleId} , #{item})
+    </foreach>
+  </insert>
 </mapper>
