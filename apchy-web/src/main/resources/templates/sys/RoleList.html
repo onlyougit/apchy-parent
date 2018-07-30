@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title>角色列表</title>
@@ -42,8 +42,10 @@
         <table style="width:100%;">
             <tr>
                 <td style="width:100%;">
+                    <shiro:hasPermission name="role:create">
                     <a class="mini-button" iconCls="icon-add" onclick="add()">添加</a>
                     <a class="mini-button" iconCls="icon-edit" onclick="authorization()">授权</a>
+                    </shiro:hasPermission>
                 </td>
             </tr>
         </table>

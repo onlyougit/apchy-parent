@@ -1,7 +1,9 @@
 package com.sptwin.apchy.web.config;
 
+import com.sptwin.apchy.web.entity.Resource;
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
+import com.sptwin.apchy.web.sys.mapper.RoleResourceCustomMapper;
 import com.sptwin.apchy.web.sys.mapper.UserCustomMapper;
 import com.sptwin.apchy.web.sys.mapper.UserRoleCustomMapper;
 import com.sptwin.apchy.web.sys.service.RoleService;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ShiroRealm extends AuthorizingRealm {
     public static final Logger log = LoggerFactory.getLogger(AuthorizingRealm.class);
@@ -31,6 +34,8 @@ public class ShiroRealm extends AuthorizingRealm {
     private UserCustomMapper userCustomMapper;
     @Autowired
     private UserRoleCustomMapper userRoleCustomMapper;
+    @Autowired
+    private RoleResourceCustomMapper roleResourceCustomMapper;
     /**
      * 用户身份验证
      */
@@ -87,16 +92,9 @@ public class ShiroRealm extends AuthorizingRealm {
             roleSet.add(role.getRoleName());
         }
         info.setRoles(roleSet);
-
-        /*List<Menu> menus=this.menuService.findMenusByUserId(user.getId());
         //获取用户权限
-        Set<String> permissionSet = new HashSet<String>();
-        for (Menu menu:menus) {
-            if(!StringUtils.isEmpty(menu.getPermission())) { //权限为空会异常，Caused by: java.lang.IllegalArgumentException: Wildcard string cannot be null
-                CollectionUtils.mergeArrayIntoCollection(menu.getPermission().split(","), permissionSet);
-            }
-        }
-        info.setStringPermissions(permissionSet);*/
+        Set<String> resourceSet = roleResourceCustomMapper.queryResourceByRoleIds(roles.stream().map(w->w.getId()).collect(Collectors.toSet()));
+        info.setStringPermissions(resourceSet);
         return info;
     }
 }

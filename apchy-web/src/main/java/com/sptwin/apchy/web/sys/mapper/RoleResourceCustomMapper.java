@@ -1,11 +1,10 @@
 package com.sptwin.apchy.web.sys.mapper;
 
-import com.sptwin.apchy.web.model.Functions;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
 import java.util.List;
+import java.util.Set;
 
 public interface RoleResourceCustomMapper {
     @Delete("delete from t_sys_role_resource where resource_id=#{value}")
@@ -18,4 +17,6 @@ public interface RoleResourceCustomMapper {
     void deleteByRoleId(Long roleId);
 
     void batchInsert(@Param("roleId") Long roleId, @Param("list")List<Long> resourceIds);
+
+    Set<String> queryResourceByRoleIds(@Param("list")Set<Long> roleSet);
 }
