@@ -11,6 +11,26 @@ public class MenuLeft {
 
     private String url;
 
+    private Long parentId;
+
+    private Integer priority;
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
     private List<MenuLeft> children;
 
     public String getId() {

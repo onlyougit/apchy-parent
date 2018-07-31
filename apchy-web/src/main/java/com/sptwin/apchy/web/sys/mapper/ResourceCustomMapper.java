@@ -2,7 +2,6 @@ package com.sptwin.apchy.web.sys.mapper;
 
 
 import com.sptwin.apchy.web.model.MenuLeft;
-import com.sptwin.apchy.web.model.MenuLeftCustom;
 import com.sptwin.apchy.web.model.ResourceCustom;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +12,7 @@ public interface ResourceCustomMapper {
     List<ResourceCustom> queryResource();
 
     //List<MenuLeft> queryResourceByParentIds(@Param("resourceType")Integer resourceType, @Param("list")Set<Long> parentIds);
-    List<MenuLeftCustom> queryResourceByParentIds(@Param("list")Set<Long> parentIds);
+    List<MenuLeft> queryResourceByParentIds(@Param("list")Set<Long> parentIds);
 
     MenuLeft queryById(Long pid);
 }

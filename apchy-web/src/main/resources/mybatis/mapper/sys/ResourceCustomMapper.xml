@@ -14,7 +14,7 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
-  <resultMap id="SecondResultMap" type="com.sptwin.apchy.web.model.MenuLeftCustom">
+  <resultMap id="SecondResultMap" type="com.sptwin.apchy.web.model.MenuLeft">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="resource_name" jdbcType="VARCHAR" property="text" />
     <result column="resource_url" jdbcType="VARCHAR" property="url" />
@@ -43,9 +43,8 @@
   </select>
   <select id="queryById" resultType="com.sptwin.apchy.web.model.MenuLeft">
     SELECT
-    id, resource_name text, resource_url url, icon_cls iconCls
+    id, resource_name text, resource_url url, icon_cls iconCls,priority
     from t_sys_resource
     WHERE id = #{value}
-    order by priority
   </select>
 </mapper>
