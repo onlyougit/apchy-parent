@@ -18,15 +18,17 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
+@EnableTransactionManagement
 @MapperScan(basePackages = MasterDataSourceConfig.PACKAGE, sqlSessionFactoryRef = "masterSqlSessionFactory")// 扫描 Mapper 接口并容器管理
 public class MasterDataSourceConfig {
 
-    static final String PACKAGE = "com.sptwin.apchy.web.sys.mapper";
+    static final String PACKAGE = "com.sptwin.apchy.web.**.mapper";
     static final String MAPPER_LOCATION = "classpath:mybatis/mapper/**/*.xml";
     static final String CONFIG_LOCATION = "mybatis/mybatis-config.xml";
     @Autowired
@@ -42,9 +44,9 @@ public class MasterDataSourceConfig {
         dataSource.setProxyFilters(filters);
         return dataSource;
     }
-    @Bean(name = "masterTransactionManager")
+    @Bean(name = "transactionManager")
     @Primary
-    public PlatformTransactionManager masterTransactionManager() {
+    public PlatformTransactionManager transactionManager() {
         return new DataSourceTransactionManager(druidDataSource());
     }
 

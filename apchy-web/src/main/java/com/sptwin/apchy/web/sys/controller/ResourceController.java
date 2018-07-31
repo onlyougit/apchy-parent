@@ -1,15 +1,11 @@
 package com.sptwin.apchy.web.sys.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.sptwin.apchy.web.entity.Resource;
-import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.model.MenuLeft;
-import com.sptwin.apchy.web.model.RoleCustom;
 import com.sptwin.apchy.web.service.SessionService;
 import com.sptwin.apchy.web.sys.service.ResourceService;
-import com.sptwin.spchy.model.common.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.*;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Controller
 @RequestMapping("resource")
@@ -45,6 +39,8 @@ public class ResourceController {
     public List<MenuLeft> getLeftMenu(){
         User user = sessionService.getUser();
         List<MenuLeft> list = resourceService.queryMenuByUserId(user.getId());
+        /*String jsonString = readToString("menu.txt");
+        List<MenuLeft> list = JSONArray.parseArray(jsonString,MenuLeft.class);*/
         return list;
     }
 

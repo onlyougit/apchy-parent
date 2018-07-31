@@ -201,7 +201,18 @@ zuul:
 6、IDEA开启自动build
 setting -> Compile -> Build project automatically --> 选中保存退出
 CTRL + SHIFT + A --> 查找Registry --> 找到并勾选compiler.automake.allow.when.app.running
-
+7、删除无用import
+|-自动：settings->Editor->General->Auto Import->勾选Optimize imports on the fly
+|-手动：Ctrl + Alt + O
+8、遇到事务不能正常回滚：
+|-查看数据库存储引擎
+  |--查看所有存储引擎：show engines;
+  |--查看表使用的存储引擎：show table status from springboot where name='t_sys_resource';
+  |--修改表存储引擎:alter table t_sys_resource engine=InnoDB;
+  |--设置InnoDB为默认引擎:在配置文件my.cnf中的 [mysqld] 下面加入default-storage-engine=INNODB 一句,重启mysql服务器
+|-@Transactional所注解的方法是否为public
+|-是否开启对注解@Transactional的解析
+|-默认情况下，Spring会对unchecked异常进行事务回滚
 
 
 

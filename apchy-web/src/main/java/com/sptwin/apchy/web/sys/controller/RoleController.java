@@ -1,7 +1,6 @@
 package com.sptwin.apchy.web.sys.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.model.PermissionCustom;
 import com.sptwin.apchy.web.model.RoleCustom;

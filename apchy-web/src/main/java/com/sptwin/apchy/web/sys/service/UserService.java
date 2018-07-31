@@ -1,6 +1,5 @@
 package com.sptwin.apchy.web.sys.service;
 
-import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.model.UserCustom;
 import com.sptwin.spchy.model.common.Pagination;
 import com.sptwin.spchy.model.common.ResponseJson;
@@ -8,7 +7,6 @@ import com.sptwin.spchy.model.common.ResponseJson;
 import java.util.Map;
 
 public interface UserService {
-    void insertUser(UserCustom userCustom);
 
     ResponseJson<Object>  changePassword(UserCustom userCustom);
 

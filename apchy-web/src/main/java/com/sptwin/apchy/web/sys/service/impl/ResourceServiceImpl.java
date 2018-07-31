@@ -2,7 +2,6 @@ package com.sptwin.apchy.web.sys.service.impl;
 
 import com.sptwin.apchy.web.entity.Resource;
 import com.sptwin.apchy.web.entity.Role;
-import com.sptwin.apchy.web.model.Functions;
 import com.sptwin.apchy.web.model.MenuLeft;
 import com.sptwin.apchy.web.model.MenuLeftCustom;
 import com.sptwin.apchy.web.model.ResourceCustom;
@@ -12,10 +11,10 @@ import com.sptwin.apchy.web.sys.mapper.RoleResourceCustomMapper;
 import com.sptwin.apchy.web.sys.mapper.UserRoleCustomMapper;
 import com.sptwin.apchy.web.sys.service.ResourceService;
 import com.sptwin.spchy.model.enums.Available;
-import com.sptwin.spchy.model.enums.ResourceType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

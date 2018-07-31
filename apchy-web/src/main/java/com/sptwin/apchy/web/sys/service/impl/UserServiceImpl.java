@@ -3,9 +3,9 @@ package com.sptwin.apchy.web.sys.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.sptwin.apchy.web.entity.Role;
 import com.sptwin.apchy.web.entity.User;
+import com.sptwin.apchy.web.model.UserCustom;
 import com.sptwin.apchy.web.sys.mapper.UserCustomMapper;
 import com.sptwin.apchy.web.sys.mapper.UserMapper;
-import com.sptwin.apchy.web.model.UserCustom;
 import com.sptwin.apchy.web.sys.mapper.UserRoleCustomMapper;
 import com.sptwin.apchy.web.sys.service.UserService;
 import com.sptwin.spchy.model.common.ApplicationError;
@@ -15,7 +15,6 @@ import com.sptwin.spchy.model.common.ResponseJson;
 import com.sptwin.spchy.model.enums.UserLockStatus;
 import com.sptwin.spchy.model.utils.EncryptUtil;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,15 +35,6 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private UserRoleCustomMapper userRoleCustomMapper;
-
-    @Override
-    public void insertUser(UserCustom userCustom) {
-        //添加用户
-        User user = new User();
-        BeanUtils.copyProperties(userCustom,user);
-        userMapper.insertSelective(user);
-        //添加用户角色
-    }
 
     @Override
     public ResponseJson<Object> changePassword(UserCustom userCustom) {
@@ -97,10 +87,7 @@ public class UserServiceImpl implements UserService {
                 userCustom.setSalt(salt);
                 userCustom.setLocked(UserLockStatus.UNLOCKED.ordinal());
                 userCustom.setGmtCreate(date);
-                int counts = userCustomMapper.insertSelective(userCustom);
-                if(counts == 1){
-                    throw new RuntimeException("事务测试");
-                }
+                userCustomMapper.insertSelective(userCustom);
             }else{//更新用户
                 //更新真实姓名
                 User user = new User();
