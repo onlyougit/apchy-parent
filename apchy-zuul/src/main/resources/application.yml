@@ -15,11 +15,13 @@ eureka:
       #注册中心的地址
       defaultZone: http://localhost:8761/eureka/
 zuul:
+  #ignoredServices: '*'
+  #ignoredPatterns: /**/admin/**
   routes:
-    order-service: #zuul唯一标识，如果该值与service-id相同，则可以省略
+    order-service: #zuul唯一标识
       path: /order-service/** #需要映射的路劲
       service-id: apchy-order #Eureka中的服务名称
-    user-service: #zuul唯一标识，如果该值与service-id相同，则可以省略
+    user-service: #zuul唯一标识
       path: /user-service/** #需要映射的路劲
       service-id: apchy-user #Eureka中的服务名称
 #下面是进行负载均衡
