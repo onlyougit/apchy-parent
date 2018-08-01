@@ -22,3 +22,10 @@ zuul:
     user-service: #zuul唯一标识，如果该值与service-id相同，则可以省略
       path: /user-service/** #需要映射的路劲
       service-id: apchy-user #Eureka中的服务名称
+#下面是进行负载均衡
+ribbon:
+  eureka:
+    enabled: false
+apchy-user:
+  ribbon:
+    listOfServers: http://localhost:8000,http://localhost:8001

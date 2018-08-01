@@ -2,7 +2,6 @@ package com.sptwin.apchy.order.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.sptwin.spchy.model.entity.Order;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,20 +12,6 @@ import java.util.List;
 
 @RestController
 public class OrderController {
-    @Value("${product.image.path}")
-    private String pip;
-    @Value("${global.test}")
-    private String globalTest;
-
-    @GetMapping("/orders/getGlocal")
-    public String getGlocal(){
-        return "global配置文件属性值："+globalTest;
-    }
-
-    @GetMapping("/orders/getPip")
-    public String getPip(){
-        return "order配置文件属性值："+pip;
-    }
 
     @GetMapping("/order/{id}")
     public String findOrderById(@PathVariable Integer id){
@@ -58,6 +43,15 @@ public class OrderController {
         orders.add(order3);
         return orders;
     }
+    @GetMapping("/order/feign/{id}")
+    public String queryOrderById(@PathVariable Integer id){
+        Order order = new Order();
+        order.setId(7900);
+        order.setAmount(new BigDecimal("55"));
+        order.setRemark("Eureka Order !");
+        return order.toString();
+    }
+
     //参数类型和返回值必须和原方法一样
     public List<Order> findOrderFallback(@PathVariable Integer userId){
         List<Order> orders = new ArrayList<>();

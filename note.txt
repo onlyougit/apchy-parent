@@ -213,6 +213,22 @@ CTRL + SHIFT + A --> 查找Registry --> 找到并勾选compiler.automake.allow.w
 |-@Transactional所注解的方法是否为public
 |-是否开启对注解@Transactional的解析
 |-默认情况下，Spring会对unchecked异常进行事务回滚
+9、Jersey RESTful 框架是开源的RESTful框架, 实现了JAX-RS (JSR 311 & JSR 339) 规范。
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jersey</artifactId>
+</dependency>
+10、dubbo和spring cloud的区别：
+|-服务注册中心：Zookeeper<--->Spring Cloud Netflix Eureka
+|-服务调用方式：RPC通讯协议<--->HTTP协议的REST API
+|-服务网关：无<--->Spring Cloud Netflix Zuul
+|-断路器：无<--->Spring Cloud Netflix Hystrix
+|-分布式配置：无<--->Spring Cloud Config
+|-服务跟踪：无<--->Spring Cloud Sleuth
+|-消息总线：无<--->Spring Cloud Bus
+|-数据流：无<--->Spring Cloud Stream
+|-批量任务：无<--->Spring Cloud Task
+|-dubbo的性能由于spring cloud
 
 
 

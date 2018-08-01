@@ -14,3 +14,6 @@ eureka:
     service-url:
       #注册中心得地址
       defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: true
