@@ -8,6 +8,8 @@ eureka:
   instance:
     hostname: localhost
   client:
+    healthcheck:
+      enabled: true
     #由于本项目是一个注册中心，是不需要向自己注册和检索服务得，所以下面两个配置为false
     register-with-eureka: false
     fetch-registry: false

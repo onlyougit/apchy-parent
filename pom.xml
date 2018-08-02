@@ -23,6 +23,7 @@
         <module>apchy-web</module>
         <module>apchy-server-config</module>
         <module>apchy-model</module>
+        <module>apchy-mq</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
