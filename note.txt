@@ -230,7 +230,23 @@ CTRL + SHIFT + A --> 查找Registry --> 找到并勾选compiler.automake.allow.w
 |-批量任务：无<--->Spring Cloud Task
 |-dubbo的性能由于spring cloud
 
-
+分布式几个难点：
+|-分布式事务解决方案
+|-分布式JOB【任务调度】
+|-分布式全局一致性【分布式锁】
+|-分布式场景下session一致性
+柔性事务：暂时可以不一致，但最终是一致的，满足Base理论
+|-两阶段提交型
+|-补偿型
+|-异步确保型
+|-最大努力通知型【如支付宝回调】
+刚性事务：满足ACID理论
+2PC：分为准备提交和确认提交两阶段
+LCN：
+|-概念：不生产事务，只是事务的搬运工，底层就是使用2PC协议
+|-优点：支持主流的RPC【Dubbo和SpringCloud】，支持各种关系型数据库
+|-发起方的方法使用注解@TxTransaction(isStart=true)；参与方类实现ITxTransaction
+|-问题：当事务协调者在给事务参与者发通知的时候，参与者挂了，怎么进行事务补偿？
 
 
 
