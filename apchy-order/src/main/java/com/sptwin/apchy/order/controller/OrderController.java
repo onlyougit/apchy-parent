@@ -1,7 +1,9 @@
 package com.sptwin.apchy.order.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.sptwin.apchy.order.service.OrderService;
 import com.sptwin.spchy.model.entity.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +15,8 @@ import java.util.List;
 @RestController
 public class OrderController {
 
+    @Autowired
+    private OrderService orderService;
     @GetMapping("/order/{id}")
     public String findOrderById(@PathVariable Integer id){
         Order order = new Order();
@@ -50,6 +54,10 @@ public class OrderController {
         order.setAmount(new BigDecimal("55"));
         order.setRemark("Eureka Order !");
         return order.toString();
+    }
+    @GetMapping("/order/lcn/test")
+    public void lcnTest(){
+        orderService.lcnTest();
     }
 
     //参数类型和返回值必须和原方法一样

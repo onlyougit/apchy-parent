@@ -13,6 +13,11 @@ public class HystrixClientFallbackFactory implements FallbackFactory<HystrixClie
             public String queryOrderById(Integer id) {
                 return "fallbackFactory！";
             }
+
+            @Override
+            public void lcnTest() {
+
+            }
         };
     }
 }

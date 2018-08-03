@@ -11,4 +11,9 @@ public class HystrixClientFallback implements HystrixClient {
     public String queryOrderById(Integer id) {
         return "fallback!";
     }
+
+    @Override
+    public void lcnTest() {
+
+    }
 }
