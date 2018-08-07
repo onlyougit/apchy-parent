@@ -11,3 +11,12 @@ spring:
     password: admin
     publisher-confirms: true
     virtual-host: /
+regCenter:
+  server-lists: localhost:2181
+  namespace: my-elastic-job
+simpleJob:
+  cron: 0/10 * * * * ?
+  #shardingTotalCount: 10
+  #shardingItemParameters: 0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J
+  shardingTotalCount: 2
+  shardingItemParameters: 0=A,1=B
