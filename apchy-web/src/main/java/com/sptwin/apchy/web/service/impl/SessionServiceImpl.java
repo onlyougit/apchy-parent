@@ -1,6 +1,7 @@
 package com.sptwin.apchy.web.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.sptwin.apchy.web.entity.User;
 import com.sptwin.apchy.web.service.SessionService;
 import com.sptwin.spchy.model.common.Constant;
@@ -14,7 +15,14 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public User getUser() {
         Session session = SecurityUtils.getSubject().getSession();
-        User user = (User) session.getAttribute(Constant.SESSION_BEAN);
+        Object object = session.getAttribute(Constant.SESSION_BEAN);
+        User user = new User();
+        if(object instanceof User){
+            user = (User) object;
+        }else{
+            String json = JSON.toJSON(object).toString();
+            user = JSON.parseObject(json,User.class);
+        }
         return user;
     }
 }

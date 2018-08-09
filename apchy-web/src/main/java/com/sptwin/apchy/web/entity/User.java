@@ -1,8 +1,10 @@
 package com.sptwin.apchy.web.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = -7483541651324132031L;
     private Long id;
 
     private String userName;

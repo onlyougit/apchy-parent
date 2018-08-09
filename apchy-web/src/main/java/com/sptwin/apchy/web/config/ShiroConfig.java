@@ -1,29 +1,25 @@
 package com.sptwin.apchy.web.config;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.sptwin.spchy.model.common.Constant;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
-import org.apache.shiro.mgt.DefaultSecurityManager;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.session.SessionListener;
-import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Primary;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 @Configuration
@@ -68,10 +64,51 @@ public class ShiroConfig {
         // 设置realm.
         securityManager.setRealm(shiroRealm());
         // 自定义缓存实现 使用redis
-        //securityManager.setCacheManager(cacheManager());
+        securityManager.setCacheManager(redisCacheManager());
         // 自定义session管理 使用redis
         securityManager.setSessionManager(sessionManager());
         return securityManager;
+    }
+
+
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        sessionManager.setSessionDAO(redisSessionDAO);
+        sessionManager.setGlobalSessionTimeout(1000*60);
+        /*sessionManager.setSessionListeners(Collections.singleton(new SessionListener() {
+            @Override
+            public void onStart(Session session) {
+                System.out.println("session start..........");
+            }
+
+            @Override
+            public void onStop(Session session) {
+                System.out.println("session stop..........");
+            }
+
+            @Override
+            public void onExpiration(Session session) {
+                System.out.println("session expiration..........");
+            }
+        }));*/
+        return sessionManager;
+    }
+    public RedisCacheManager redisCacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        return redisCacheManager;
+    }
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost("localhost");
+        redisManager.setPort(6379);
+        //redisManager.setExpire(30);// 配置缓存过期时间
+        redisManager.setTimeout(0);
+        // redisManager.setPassword(password);
+        return redisManager;
     }
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
@@ -93,61 +130,6 @@ public class ShiroConfig {
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
     }
-    /**
-     * cacheManager 缓存 redis实现
-     * 使用的是shiro-redis开源插件
-     * @return
-     */
-
-    @Bean
-    public DefaultWebSessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(1000*60*30);
-        /*sessionManager.setSessionListeners(Collections.singleton(new SessionListener() {
-            @Override
-            public void onStart(Session session) {
-                System.out.println("session start..........");
-            }
-
-            @Override
-            public void onStop(Session session) {
-                System.out.println("session stop..........");
-            }
-
-            @Override
-            public void onExpiration(Session session) {
-                System.out.println("session expiration..........");
-            }
-        }));*/
-        return sessionManager;
-    }
-    /*public RedisCacheManager cacheManager() {
-        RedisCacheManager redisCacheManager = new RedisCacheManager();
-        redisCacheManager.setRedisManager(redisManager());
-        return redisCacheManager;
-    }
-    public RedisManager redisManager() {
-        RedisManager redisManager = new RedisManager();
-        redisManager.setHost("47.96.18.156");
-        redisManager.setPort(6379);
-        redisManager.setExpire(1800);
-        redisManager.setTimeout(5000);
-        return redisManager;
-    }
-    @Bean
-    public DefaultWebSessionManager sessionManager() {
-        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setSessionDAO(redisSessionDAO());
-        sessionManager.setGlobalSessionTimeout(1800);
-        sessionManager.setCacheManager(cacheManager());
-        return sessionManager;
-    }
-    @Bean
-    public RedisSessionDAO redisSessionDAO() {
-        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
-        redisSessionDAO.setRedisManager(redisManager());
-        return redisSessionDAO;
-    }*/
     /**
      * LifecycleBeanPostProcessor，这是个DestructionAwareBeanPostProcessor的子类，
      * 负责org.apache.shiro.util.Initializable类型bean的生命周期的，初始化和销毁。
