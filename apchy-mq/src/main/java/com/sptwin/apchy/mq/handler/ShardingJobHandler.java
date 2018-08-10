@@ -30,7 +30,7 @@ public class ShardingJobHandler extends IJobHandler {
 				System.out.println("第 "+i+" 片, 忽略");
 			}
 		}
-		return SUCCESS;
+		return SUCCESS;//失败：IJobHandler.FAIL；失败重试：IJobHandler.FAIL_RETRY
 	}
 
 }
