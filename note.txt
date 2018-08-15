@@ -198,6 +198,16 @@ zuul:
         profile: prod
         label: master
         uri: http://localhost:8888/ #配置中心的地址
+|-手动刷新
+  |--加@RefreshScope
+  |--加actuator依赖
+  |--http://locahost:8888/refresh
+  |--缺点：每个节点都要刷一遍
+|-半自动刷新
+  |--加spring-cloud-starter-bus-amqp
+  |--http://locahost:8888/bus/refresh
+|-想要自动刷新就要在git上的webhooks配置
+|-真正生产上不放心自动刷新，因为不知道到底有没有刷新成功
 6、IDEA开启自动build
 setting -> Compile -> Build project automatically --> 选中保存退出
 CTRL + SHIFT + A --> 查找Registry --> 找到并勾选compiler.automake.allow.when.app.running
@@ -253,6 +263,7 @@ XXL-JOB:
 雪崩效应解决：
 1、超时机制【服务降级fallback】
 限流机制解决：nginx、zuul、hystrix自带
+
 
 
 
