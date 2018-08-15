@@ -9,11 +9,11 @@ public class HystrixClientFallback implements HystrixClient {
 
     @Override
     public String queryOrderById(Integer id) {
-        return "fallback!";
+        return "fallbackFactory！";
     }
 
     @Override
-    public void lcnTest() {
-
+    public String xuebeng() {
+        return "服务繁忙，请稍后再试！";
     }
 }

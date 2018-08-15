@@ -65,4 +65,19 @@ public class OrderController {
         List<Order> orders = new ArrayList<>();
         return orders;
     }
+
+    @GetMapping("/order/xuebeng")
+    public String xuebeng(){
+        /*try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        Order order = new Order();
+        order.setId(7900);
+        order.setAmount(new BigDecimal("55"));
+        order.setRemark("Eureka Order !");
+        System.out.println("******");
+        return order.toString();
+    }
 }

@@ -1,6 +1,8 @@
 server:
   port: 8000
   contextPath: /
+#  tomcat:
+#    max-threads: 50
 spring:
   application:
     name: apchy-user
@@ -8,7 +10,7 @@ spring:
     master:
       url: jdbc:mysql://localhost:3306/apchy?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
       username: root
-      password: admin
+      password: root
       driverClassName: com.mysql.jdbc.Driver
       initialSize: 5
       minIdle: 5
@@ -38,10 +40,27 @@ eureka:
     service-url:
       #注册中心得地址
       defaultZone: http://localhost:8761/eureka/
+#解决调用服务超时
+ribbon:
+  ReadTimeout: 6000
+  ConnectTimeout: 60000
+#开启熔断机制
 feign:
   hystrix:
     enabled: true
-#txmanager地址
-tm:
-  manager:
-    url: http://127.0.0.1:8899/tx/manager/
+hystrix:
+  threadpool:
+    default:
+      #并发执行的最大线程数，默认10
+      coreSize: 1000
+      #BlockingQueue的最大队列数
+      maxQueueSize: 1000
+      #即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝'
+      queueSizeRejectionThreshold: 1000
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            #调用服务超过10秒就走fallback方法
+            timeoutInMilliseconds: 10000

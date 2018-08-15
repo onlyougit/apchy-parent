@@ -7,12 +7,12 @@ import feign.RequestLine;
 import org.springframework.cloud.openfeign.FeignClient;
 
 //fallback和fallbackFactory只能有一个存在，fallbackFactory是fallback的扩展，能打印异常日志
-@FeignClient(name="apchy-order",configuration = FeignConfig.class,/* fallback =HystrixClientFallback.class,*/ fallbackFactory = HystrixClientFallbackFactory.class)
+@FeignClient(name="apchy-order",configuration = FeignConfig.class,/*fallback = HystrixClient.class,*/fallbackFactory = HystrixClientFallbackFactory.class)
 public interface HystrixClient {
 
     @RequestLine("GET /order/feign/{id}")
     String queryOrderById(@Param(value="id") Integer id);
 
-    @RequestLine("GET /order/lcn/test")
-    void lcnTest();
+    @RequestLine("GET /order/xuebeng")
+    String xuebeng();
 }

@@ -29,7 +29,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <netflix.version>1.4.4.RELEASE</netflix.version>
+        <netflix.version>1.4.5.RELEASE</netflix.version>
+        <config.version>2.0.0.RELEASE</config.version>
         <swagger.version>2.8.0</swagger.version>
         <lcn.last.version>4.1.0</lcn.last.version>
         <apchy.model.version>1.0-SNAPSHOT</apchy.model.version>
@@ -101,12 +102,12 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-config-server</artifactId>
-                <version>${netflix.version}</version>
+                <version>${config.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-config</artifactId>
-                <version>${netflix.version}</version>
+                <version>${config.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -114,37 +115,6 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <!--<dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Edgware.SR4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>-->
-
-            <!-- LCN分布式事务相关依赖 -->
-            <dependency>
-                <groupId>com.codingapi</groupId>
-                <artifactId>transaction-springcloud</artifactId>
-                <version>${lcn.last.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.codingapi</groupId>
-                <artifactId>tx-plugins-db</artifactId>
-                <version>${lcn.last.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>

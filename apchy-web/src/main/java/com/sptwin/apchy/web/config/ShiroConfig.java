@@ -64,7 +64,7 @@ public class ShiroConfig {
         // 设置realm.
         securityManager.setRealm(shiroRealm());
         // 自定义缓存实现 使用redis
-        securityManager.setCacheManager(redisCacheManager());
+        //securityManager.setCacheManager(redisCacheManager());
         // 自定义session管理 使用redis
         securityManager.setSessionManager(sessionManager());
         return securityManager;
@@ -77,7 +77,7 @@ public class ShiroConfig {
         RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
         redisSessionDAO.setRedisManager(redisManager());
         sessionManager.setSessionDAO(redisSessionDAO);
-        sessionManager.setGlobalSessionTimeout(1000*60);
+        //sessionManager.setGlobalSessionTimeout(1000*15);
         /*sessionManager.setSessionListeners(Collections.singleton(new SessionListener() {
             @Override
             public void onStart(Session session) {
@@ -105,7 +105,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost("localhost");
         redisManager.setPort(6379);
-        //redisManager.setExpire(30);// 配置缓存过期时间
+        redisManager.setExpire(30);// 配置缓存过期时间
         redisManager.setTimeout(0);
         // redisManager.setPassword(password);
         return redisManager;
@@ -145,6 +145,7 @@ public class ShiroConfig {
     public ShiroRealm shiroRealm(){
         ShiroRealm shiroRealm = new ShiroRealm();
         shiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+        shiroRealm.setCachingEnabled(true);
         return shiroRealm;
     }
     /**

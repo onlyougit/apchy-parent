@@ -6,9 +6,13 @@ spring:
     name: apchy-server-config
   cloud:
     config:
+      label: master
       server:
         git:
-          uri: https://github.com/onlyougit/apchy-config.git
+          username: 996041341@qq.com
+          password: Wangwb123
+          searchPaths:
+          uri: https://gitee.com/wwbztree/apchy-config.git
 eureka:
   instance:
     #是否显示主机得IP

@@ -110,7 +110,7 @@ restTemplate.getForObject("http://apchy-orer/order/"+oid,String.class);【为了
   	}
   |--仪表盘：实心圆、曲线、成功数量、失败率
 4、Zuul
-|-Zuul属于边缘框架，可以用来执行人真、动态路由、服务迁移、负载均衡、安全和动态响应处理等操作
+|-Zuul属于边缘框架，可以用来执行人真、动态路由、服务迁移、负载均衡、安全和动态响应处理等操作，也解决了跨域问题,拦截请求参数
 |-pom.xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -250,7 +250,9 @@ LCN：
 XXL-JOB:
 |-XXL-JOB中“调度模块”和“任务模块”完全解耦
 
-
+雪崩效应解决：
+1、超时机制【服务降级fallback】
+限流机制解决：nginx、zuul、hystrix自带
 
 
 
