@@ -5,6 +5,8 @@ import com.sptwin.apchy.user.service.HystrixClient;
 import com.sptwin.spchy.model.entity.Order;
 import com.sptwin.spchy.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +18,19 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @RestController
+@RefreshScope
 public class UserController {
     public static final String ORDER_SERVICE_URL = "http://apchy-order/";
+    @Value("${product.image.path}")
+    private String pPath;
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
     private HystrixClient hystrixClient;
-
+    @GetMapping("/users/getPath")
+    public String getPath(){
+        return pPath;
+    }
     @GetMapping("/users/{id}")
     @HystrixCommand(fallbackMethod = "fallbackInfo")
     public String findOrdersByUser(@PathVariable Integer id){
