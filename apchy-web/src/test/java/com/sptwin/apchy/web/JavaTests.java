@@ -14,7 +14,10 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class JavaTests {
+
     @Test
     public void testShiro() {
         //1、获取SecurityManager工厂，此处使用Ini配置文件初始化SecurityManager

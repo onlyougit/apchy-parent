@@ -263,6 +263,27 @@ XXL-JOB:
 1、超时机制【服务降级fallback】
 限流机制解决：nginx、zuul、hystrix自带
 
+SpringBoot性能优化【JVM、Nginx】
+|-JVM优化【默认4G】
+  |--内部调优：-XX:+PrintGCDetails -Xmx1024M -Xms1024M
+  |--外部调优：java -server -Xms32M -Xmx32M -jar app.jar
+|-扫包优化
+|-默认Tomcat容器改成Undertow【使用jmeter测试吞吐量】
+  |--先在web依赖排除tomcat依赖
+  <exclussion>
+  <groupId>org.springframework.boot
+  <artifactId>spring-boot-starter-tomcat
+  |--引入Undertow依赖
+  <groupId>org.springframework.boot
+  <artifactId>spring-boot-starter-undertow
+ArrayList
+|-默认初始化容量10
+|-底层是数组+扩容技术实现[Arrays.copyOf->System.arraycopy]
+LinkedList底层是双链表
+HashMap
+|-数组+单链表【JDK1.7】、数组+红黑树【JDK1.8】
+|-hash冲突底层使用链表方式存储
+|-每个Node都存储Entry对象
 
 
 
