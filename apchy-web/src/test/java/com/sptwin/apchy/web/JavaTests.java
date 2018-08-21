@@ -14,10 +14,15 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class JavaTests {
+    @Test
+    public void test() {
 
+        //byte[] bytes = new byte[4*1024*1024];
+        System.out.println("最大内存："+Runtime.getRuntime().maxMemory()/1024/1024+"M");
+        System.out.println("可用内存："+Runtime.getRuntime().freeMemory()/1024/1024+"M");
+        System.out.println("已使用内存："+Runtime.getRuntime().totalMemory()/1024/1024+"M");
+    }
     @Test
     public void testShiro() {
         //1、获取SecurityManager工厂，此处使用Ini配置文件初始化SecurityManager
