@@ -9,8 +9,22 @@ spring:
     port: 5672
     username: root
     password: admin
+    #开启发送确认
     publisher-confirms: true
+    #开启发送失败退回
+    publisher-returns: true
     virtual-host: /
+    #重试机制
+    template:
+      retry:
+        enabled: true
+        initial-interval: 5s
+    #开启ACK
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
 xxl:
   job:
     admin:

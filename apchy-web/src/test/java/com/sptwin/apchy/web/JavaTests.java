@@ -19,9 +19,33 @@ public class JavaTests {
     public void test() {
 
         //byte[] bytes = new byte[4*1024*1024];
-        System.out.println("最大内存："+Runtime.getRuntime().maxMemory()/1024/1024+"M");
+        /*System.out.println("最大内存："+Runtime.getRuntime().maxMemory()/1024/1024+"M");
         System.out.println("可用内存："+Runtime.getRuntime().freeMemory()/1024/1024+"M");
         System.out.println("已使用内存："+Runtime.getRuntime().totalMemory()/1024/1024+"M");
+        List list = new ArrayList();
+        list.add("a");
+        list.add("b");
+        list.add("c");*/
+        /*ListIterator listIterator = list.listIterator();
+        while (listIterator.hasNext()){
+            String ele = (String)listIterator.next();
+            if("b".equals(ele)){
+                listIterator.remove();
+            }
+            System.out.println(ele);
+        }
+        System.out.println("---------------------");
+        ListIterator listIterator2 = list.listIterator();
+        while (listIterator2.hasNext()){
+            System.out.println(listIterator2.next());
+        }*/
+        Integer i = Integer.valueOf(222);
+        Integer j = Integer.valueOf(222);
+        System.out.println(i.equals(j));
+        System.out.println("--------------");
+        String a = "abc";
+        StringBuilder stringBuilder = new StringBuilder(a);
+        System.out.println(a.equals(stringBuilder));
     }
     @Test
     public void testShiro() {
